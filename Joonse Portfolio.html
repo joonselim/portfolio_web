@@ -836,6 +836,74 @@
     .edu-card:hover .crest { transform: rotate(-6deg) scale(1.05); }
     .chip { transition: all .2s; }
     .chip:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ─── Project case-study layout ─────────────────────────────── */
+    .case-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 48px;
+      flex: 1;
+      min-height: 0;
+      margin-top: 24px;
+    }
+    .case-info { display: flex; flex-direction: column; gap: 18px; overflow: hidden; }
+    .case-info .block h4 {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--navy); margin-bottom: 7px;
+    }
+    .case-info .block p { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+    .case-info .block ul { list-style: none; padding: 0; margin: 0; }
+    .case-info .block ul li {
+      font-size: 14px; line-height: 1.45;
+      padding: 3px 0 3px 18px; position: relative; color: var(--ink-2);
+    }
+    .case-info .block ul li::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 7px; height: 7px; border-radius: 2px;
+      background: linear-gradient(135deg, var(--navy), var(--accent));
+    }
+    .case-demo {
+      position: relative;
+      border-radius: 16px; overflow: hidden;
+      background: var(--ink);
+      box-shadow: 0 12px 40px rgba(1,33,105,.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .case-demo.phone { padding: 20px; }
+    .case-demo.phone iframe {
+      width: 340px; height: 100%; max-height: 680px;
+      border-radius: 24px; border: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    .case-demo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .case-demo .demo-tag {
+      position: absolute; top: 12px; left: 12px;
+      font-size: 10px; padding: 4px 9px; border-radius: 4px;
+      background: rgba(255,255,255,.92); color: var(--navy);
+      letter-spacing: .14em; text-transform: uppercase;
+      font-weight: 700; z-index: 2;
+    }
+    .case-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 40px; padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+    }
+    .case-head .cat {
+      display: inline-block; margin-bottom: 10px;
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      background: rgba(1,33,105,.07); color: var(--navy);
+    }
+    .case-head .links {
+      display: flex; flex-direction: column; gap: 3px; align-items: flex-end;
+      font-size: 12px; color: var(--muted);
+    }
+    .case-head .links a {
+      color: var(--ink); text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 11.5px;
+    }
   </style>
 </head>
 <body>
@@ -1399,7 +1467,7 @@ function PageMark({n, label}) {
   return (
     <>
       <div className="page-mark"><span className="dot"></span>{label}</div>
-      <div className="page-num">{String(n).padStart(2,'0')} / 12</div>
+      <div className="page-num">{String(n).padStart(2,'0')} / 15</div>
     </>
   );
 }
@@ -1651,7 +1719,172 @@ function PageForcs() {
   );
 }
 
-// Page 9 — Projects
+// Page 9 — Audible
+function PageAudible() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={9} label="Case · Audible" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Product planning</span>
+          <div className="h2">Audible <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Read &amp; Listen</span></div>
+          <div className="small mt-8" style={{color:"var(--muted)"}}>scroll-to-seek prototype</div>
+        </div>
+        <div className="links">
+          <span>Live demo</span>
+          <a href="https://audiblereadandlistenscrollmodify.vercel.app/player" target="_blank">audiblereadandlisten…vercel.app ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Product thesis</h4>
+            <p>Audiobook text should not be chained to the playhead. Readers want to browse ahead, jump back, and read-without-listening — the current UX doesn't let them.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>Interaction design</h4>
+            <ul>
+              <li>Locked (default) — text auto-scrolls with audio</li>
+              <li>First scroll surfaces a "scroll up to unlock" hint</li>
+              <li>Unlocked — text freezes, every word becomes tappable</li>
+              <li>Tap a word → playback seeks there, text re-locks</li>
+              <li>"Go back to 1:49" pill remembers the pre-seek position</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Precedents studied</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">YouTube Music · lyrics</span>
+              <span className="chip soft">Spotify · lyrics</span>
+              <span className="chip soft">Audible mobile app</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Music apps solved scroll-to-seek on lyrics years ago. Long-form reading deserves the same freedom — and the fix is interaction design, not a new model or backend.</p>
+          </div>
+        </div>
+        <div className="case-demo phone enter enter-scale">
+          <div className="demo-tag">Live · tap words to seek</div>
+          <iframe
+            src="https://audiblereadandlistenscrollmodify.vercel.app/player"
+            title="Audible Read & Listen prototype"
+            allow="autoplay; fullscreen"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 10 — SHIS
+function PageShis() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={10} label="Case · SHIS" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Transformation · 2nd Place · Microsoft Buildathon</span>
+          <div className="h2">SHIS — <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Shift Handover</span> Intelligence System</div>
+        </div>
+        <div className="links">
+          <span>Live demo · GitHub</span>
+          <a href="https://joonselim.github.io/sea_tech_summit_microsoft_buildathon/" target="_blank">joonselim.github.io/sea_tech_summit… ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Transformation goal</h4>
+            <p>Replace an unreliable, paper-based shift-handover ritual with a structured, auditable, 2-minute workflow — standardized across operators, supervisors, and plant managers.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>Interventions</h4>
+            <ul>
+              <li>Structured capture UI in place of paper notebooks</li>
+              <li>Bridge the silo between machine alarms and operator tacit knowledge</li>
+              <li>Auto-generated standardized shift report</li>
+              <li>Digital sign-off — accountability across every shift</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stakeholders &amp; scope</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Plant operators</span>
+              <span className="chip soft">Shift supervisors</span>
+              <span className="chip soft">Plant manager</span>
+              <span className="chip soft">Time-to-context &lt; 2 min</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Manual handover is where production minutes disappear. Built as a POC for Microsoft Atlanta Buildathon's AI-workforce-transformation track — <b>won 2nd place</b>. The change is organizational, not just technological.</p>
+          </div>
+        </div>
+        <div className="case-demo enter enter-scale">
+          <div className="demo-tag">Screen recording</div>
+          <img src="gif/shis.gif" alt="SHIS dashboard in action" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 11 — Phone Agent
+function PagePhoneAgent() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={11} label="Case · Phone Agent" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Development</span>
+          <div className="h2">Phone Agent — <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>natural-language</span> Android control</div>
+        </div>
+        <div className="links">
+          <span>GitHub</span>
+          <a href="https://github.com/joonselim/phone-agent-try" target="_blank">github.com/joonselim/phone-agent-try ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Intent</h4>
+            <p>Control an Android phone entirely by typing natural-language commands — "order me KFC", "open Uber to my office". No taps required during execution.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>Architecture</h4>
+            <ul>
+              <li>Claude parses user intent and extracts parameters</li>
+              <li>Router dispatches to service handlers (Uber Eats, Amazon)</li>
+              <li>Droidrun + ADB drive the device without any user taps</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stack</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Claude API (Sonnet)</span>
+              <span className="chip soft">Droidrun SDK</span>
+              <span className="chip soft">ADB</span>
+              <span className="chip soft">Python 3.12</span>
+              <span className="chip soft">uv</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Hands-free device control is where LLMs actually pay off — describe what you want, the agent operates the app. A US-adapted fork of DDalkkak (Korean original), rebuilt around US services.</p>
+          </div>
+        </div>
+        <div className="case-demo enter enter-scale">
+          <div className="demo-tag">Screen recording</div>
+          <img src="gif/phone_agent.gif" alt="Phone Agent in action" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 12 — Projects
 function PageProjects() {
   const projects = [
     { t:"MBA Buildathon — 2nd of 20", d:"Built and demoed a working Copilot-based prototype at the SEA MBA Tech Summit AI Workforce Transformation Buildathon, Microsoft Atlanta.", tags:["Copilot","Prototype","LLM"] },
@@ -1663,7 +1896,7 @@ function PageProjects() {
   ];
   return (
     <div>
-      <PageMark n={9} label="Projects" />
+      <PageMark n={12} label="Projects" />
       <div className="row between" style={{alignItems:"flex-end"}}>
         <div>
           <div className="eyebrow">Selected Projects</div>
@@ -1697,7 +1930,7 @@ function PageSkills() {
   ];
   return (
     <div>
-      <PageMark n={10} label="Skills" />
+      <PageMark n={13} label="Skills" />
       <div className="eyebrow">Capabilities</div>
       <div className="h1 mt-16">Skills <span style={{color:"var(--muted)"}}>— self-rated, honestly.</span></div>
       <div className="body-lg mt-16" style={{color:"var(--muted)",maxWidth:720}}>
@@ -1736,7 +1969,7 @@ function PageAwards() {
   ];
   return (
     <div>
-      <PageMark n={11} label="Awards & Fun" />
+      <PageMark n={14} label="Awards & Fun" />
       <div className="eyebrow">Awards & Hobbies</div>
       <div className="h1 mt-16">Outside work.</div>
       <div className="row gap-32 mt-48" style={{alignItems:"flex-start"}}>
@@ -1776,7 +2009,7 @@ function PageAwards() {
 function PageContact() {
   return (
     <div>
-      <PageMark n={12} label="Contact" />
+      <PageMark n={15} label="Contact" />
       <div className="row between" style={{alignItems:"flex-start",height:"100%"}}>
         <div className="stack" style={{justifyContent:"space-between",height:"100%",flex:"1 1 0",paddingRight:48}}>
           <div>
@@ -1804,8 +2037,9 @@ function PageContact() {
 
 Object.assign(window, {
   PageTitle, PageAbout, PageEducation, PageExperience,
-  PageShinhan, PageStartup, PageForcs, PageProjects,
-  PageSkills, PageAwards, PageContact,
+  PageShinhan, PageStartup, PageForcs,
+  PageAudible, PageShis, PagePhoneAgent,
+  PageProjects, PageSkills, PageAwards, PageContact,
 });
   </script>
 
@@ -1827,6 +2061,9 @@ const PAGES = [
   { key:"shinhan", label:"Shinhan",    Cmp: PageShinhan },
   { key:"startup", label:"Founder",    Cmp: PageStartup },
   { key:"forcs",   label:"FORCS",      Cmp: PageForcs },
+  { key:"audible", label:"Audible",    Cmp: PageAudible },
+  { key:"shis",    label:"SHIS",       Cmp: PageShis },
+  { key:"phone",   label:"Phone Agent",Cmp: PagePhoneAgent },
   { key:"proj",    label:"Projects",   Cmp: PageProjects },
   { key:"skills",  label:"Skills",     Cmp: PageSkills },
   { key:"awards",  label:"Awards",     Cmp: PageAwards },
