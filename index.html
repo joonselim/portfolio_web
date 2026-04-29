@@ -89,6 +89,23 @@
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
+      /* Click anywhere on the page (outside the interactive zones below)
+         to advance to the next slide. */
+      cursor: e-resize;
+    }
+    /* But keep the default cursor / interaction over chatbot, iframes,
+       links, buttons, form inputs, the tweaks panel, and any opt-out. */
+    .page.active a,
+    .page.active button,
+    .page.active input,
+    .page.active textarea,
+    .page.active select,
+    .page.active label,
+    .page.active iframe,
+    .page.active .chat-panel,
+    .page.active .twk-panel,
+    .page.active [data-no-nav] {
+      cursor: auto;
     }
 
     /* ─── Page Transitions ───────────────────────────────────────── */
@@ -2360,13 +2377,33 @@ function App() {
     setTimeout(() => setLeavingIdx(null), 700);
   };
 
+  // Click anywhere on the active page to advance, EXCEPT inside
+  // interactive zones (chatbot, iframes, links, buttons, inputs, the
+  // tweaks panel, or anything explicitly opted out with data-no-nav).
+  const onPageClick = (i) => (e) => {
+    if (i !== idx) return;                   // only the active page navigates
+    const blocked = e.target.closest(
+      'a, button, input, textarea, select, label, iframe, ' +
+      '.chat-panel, .twk-panel, [data-no-nav]'
+    );
+    if (blocked) return;
+    // Don't advance while the user is selecting/highlighting text.
+    const sel = typeof window !== "undefined" && window.getSelection
+      ? window.getSelection() : null;
+    if (sel && sel.toString().length > 0) return;
+    go(idx + 1);
+  };
+
   return (
     <>
       {PAGES.map((p,i) => {
         const active = i === idx;
         const leaving = i === leavingIdx;
         return (
-          <div key={p.key} className={`page${active?" active":""}${leaving?" leaving":""}`} data-screen-label={`${String(i+1).padStart(2,'0')} ${p.label}`}>
+          <div key={p.key}
+               className={`page${active?" active":""}${leaving?" leaving":""}`}
+               data-screen-label={`${String(i+1).padStart(2,'0')} ${p.label}`}
+               onClick={onPageClick(i)}>
             <p.Cmp />
           </div>
         );
