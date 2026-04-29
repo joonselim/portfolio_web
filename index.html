@@ -940,6 +940,77 @@
       border-bottom: 1px solid var(--rule);
       font-family: var(--mono); font-size: 11.5px;
     }
+
+    /* ─── Print: one slide per page, native 1600×900 size ───────────
+       Browsers ignore the on-screen `transform: scale()` on the stage,
+       so for print we lay every .page out in the document flow at the
+       authored design size, paginate one per sheet, and hide the
+       on-screen UI chrome (timeline, kbd hint, tweaks panel). */
+    @page {
+      size: 1600px 900px;
+      margin: 0;
+    }
+    @media print {
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Reset the stage: no scaling, no fixed size, no shadow. */
+      #stage-wrap, #stage {
+        position: static !important;
+        transform: none !important;
+        width: auto !important;
+        height: auto !important;
+        background: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        overflow: visible !important;
+        inset: auto !important;
+      }
+
+      /* Every slide visible, in document flow, at design size. */
+      .page {
+        position: relative !important;
+        inset: auto !important;
+        width: 1600px !important;
+        height: 900px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        overflow: hidden !important;
+        page-break-after: always;
+        break-after: page;
+        break-inside: avoid;
+        background: var(--paper) !important;
+      }
+      .page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      /* Hide on-screen chrome (timeline, hint, tweaks). */
+      #timeline,
+      .kbd-hint,
+      .twk-panel,
+      .twk-toggle {
+        display: none !important;
+      }
+
+      /* No motion in print. */
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      /* Force background colors and gradients to render. */
+      * {
+        -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+      }
+    }
   </style>
 </head>
 <body>
