@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joonse Lim — Portfolio</title>
+  <script src="deck-stage.js" defer></script>
+  <script src="config.js" defer></script>
+  <script src="chatbot.js" defer></script>
+  <style>
+    /* ─────────────────────────────────────────────────────────────
+       Joonse Lim · Portfolio.
+       Apple-minimal bones, Duke Blue palette. One intro slide
+       (name left, chatbot right), three work-experience slides
+       with company logos, four project slides.
+       ───────────────────────────────────────────────────────────── */
+    :root {
+      --bg:        #f6f7fa;
+      --bg-2:      #ffffff;
+      --fg:        #0a0f1f;
+      --muted:     #5a6275;
+      --line:      rgba(1, 33, 105, 0.12);
+      --accent:    #012169;
+      --accent-2:  #0057b8;
+      --dark-bg:   #00102e;
+      --dark-fg:   #f3f5fb;
+      --dark-muted: rgba(243, 245, 251, 0.62);
+      --dark-line: rgba(255, 255, 255, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      background: #000;
+      font-family: "SF Pro Display", "SF Pro Text", -apple-system,
+                   BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ─── Slide shell ─────────────────────────────────────────── */
+    section.slide {
+      background: var(--bg);
+      padding: 110px 140px;
+      display: flex;
+      flex-direction: column;
+      font-size: 26px;
+      line-height: 1.47;
+      letter-spacing: -0.003em;
+      color: var(--fg);
+    }
+    section.slide.dark { background: var(--dark-bg); color: var(--dark-fg); }
+    section.slide.white { background: var(--bg-2); }
+
+    /* ─── Typography scale ─────────────────────────────────────── */
+    h1.display {
+      font-size: 144px; font-weight: 600;
+      letter-spacing: -0.038em; line-height: 0.96;
+    }
+    h2.headline {
+      font-size: 84px; font-weight: 600;
+      letter-spacing: -0.025em; line-height: 1.05;
+    }
+    h3.sub {
+      font-size: 52px; font-weight: 600;
+      letter-spacing: -0.018em; line-height: 1.12;
+    }
+
+    .grad {
+      background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+              background-clip: text;
+      color: transparent;
+    }
+
+    .muted { color: var(--muted); }
+    .body {
+      font-size: 26px; line-height: 1.55;
+      max-width: 1400px; color: rgba(10, 15, 31, 0.82);
+    }
+    .body b { color: var(--fg); font-weight: 600; }
+    .small { font-size: 20px; color: var(--muted); letter-spacing: 0.002em; }
+
+    .mark {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 14px; border-radius: 999px;
+      background: var(--accent); color: #fff;
+      font-size: 14px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+
+    /* ─── 1 · Intro + Chatbot ─────────────────────────────────── */
+    .s-intro {
+      padding: 90px 100px;
+      background:
+        radial-gradient(900px 600px at 12% 18%, rgba(1, 33, 105, 0.22), transparent 60%),
+        radial-gradient(1000px 700px at 92% 88%, rgba(0, 87, 184, 0.20), transparent 55%),
+        var(--bg);
+    }
+    .s-intro .frame {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      min-height: 0;
+    }
+    .s-intro .left {
+      display: flex; flex-direction: column;
+    }
+    .s-intro .left .mark { align-self: flex-start; margin-bottom: 36px; }
+    .s-intro h1 { max-width: 920px; }
+    .s-intro .tag {
+      margin-top: 28px;
+      font-size: 30px; font-weight: 400;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      max-width: 800px;
+    }
+    .s-intro .facts {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 900px;
+    }
+    .s-intro .fact h4 {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
+    }
+    .s-intro .fact p { font-size: 18px; line-height: 1.5; color: var(--fg); }
+    .s-intro .contact {
+      margin-top: 48px;
+      display: flex; gap: 24px; flex-wrap: wrap;
+      font-size: 16px; color: var(--muted);
+    }
+    .s-intro .contact a {
+      color: var(--accent); text-decoration: none;
+      border-bottom: 1px solid var(--line); padding-bottom: 2px;
+    }
+    .s-intro .contact b { color: var(--fg); }
+
+    /* Chatbot panel — sits in the right column. */
+    .chatbot {
+      height: 100%;
+      max-height: 820px;
+      display: flex; flex-direction: column;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(1, 33, 105, 0.18),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      overflow: hidden;
+    }
+    .chatbot .chat-hd {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .chatbot .chat-hd .av {
+      width: 40px; height: 40px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--accent);
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(1, 33, 105, 0.18);
+    }
+    .chatbot .chat-hd .av img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .chatbot .chat-hd .chat-hd-text { flex: 1; min-width: 0; }
+    .chatbot .chat-hd .name {
+      font-size: 15px; font-weight: 600; color: var(--fg);
+      letter-spacing: -0.005em;
+    }
+    .chatbot .chat-hd .sub {
+      font-size: 11px; color: var(--muted); margin-top: 2px;
+    }
+    .chatbot .chat-hd .online {
+      font-size: 10px; font-weight: 600;
+      color: #1e7a46; letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .chatbot .chat-log {
+      flex: 1;
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 10px;
+      scroll-behavior: smooth;
+    }
+    .chatbot .bubble {
+      max-width: 82%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      letter-spacing: -0.003em;
+      word-wrap: break-word;
+    }
+    .chatbot .bubble.bot {
+      align-self: flex-start;
+      background: rgba(1, 33, 105, 0.06);
+      color: var(--fg);
+      border-bottom-left-radius: 6px;
+    }
+    .chatbot .bubble.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border-bottom-right-radius: 6px;
+    }
+    .chatbot .bubble.typing {
+      display: inline-flex; gap: 4px;
+      padding: 14px 16px;
+    }
+    .chatbot .bubble.typing i {
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: var(--muted);
+      animation: blink 1.2s infinite ease-in-out;
+    }
+    .chatbot .bubble.typing i:nth-child(2) { animation-delay: 0.18s; }
+    .chatbot .bubble.typing i:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes blink { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+    .chatbot .sugs {
+      padding: 0 22px 12px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .chatbot .sug {
+      font: inherit;
+      font-size: 12px; font-weight: 500;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+    .chatbot .sug:hover {
+      background: rgba(1, 33, 105, 0.06);
+      border-color: rgba(1, 33, 105, 0.2);
+    }
+
+    .chatbot .chat-input {
+      display: flex; gap: 8px;
+      padding: 14px 18px 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .chatbot .chat-input input {
+      flex: 1;
+      font: inherit;
+      font-size: 15px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--fg);
+      outline: none;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+    .chatbot .chat-input input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(1, 33, 105, 0.12);
+    }
+    .chatbot .chat-input button {
+      font: inherit;
+      font-size: 14px; font-weight: 600;
+      padding: 12px 22px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+    .chatbot .chat-input button:disabled {
+      opacity: 0.45; cursor: not-allowed;
+    }
+    .chatbot .chat-input button:not(:disabled):active { transform: scale(0.97); }
+
+    /* ─── Project / case-study slide (shared) ─────────────────── */
+    .s-project { padding: 80px 100px 80px; }
+    .s-project .project-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 40px; margin-bottom: 28px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .s-project .category-tag {
+      display: inline-block; margin-bottom: 14px;
+      padding: 5px 13px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      background: rgba(1, 33, 105, 0.09); color: var(--accent);
+    }
+    .s-project .project-head .meta {
+      font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .s-project .project-head h3 {
+      font-size: 52px; font-weight: 600; line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .s-project .project-head .links {
+      display: flex; flex-direction: column; gap: 4px; align-items: flex-end;
+      font-size: 15px; color: var(--muted);
+    }
+    .s-project .project-head .links a {
+      color: var(--fg); text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px;
+    }
+    .s-project .two-col {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 48px;
+      min-height: 0;
+    }
+    .s-project .info-col { display: flex; flex-direction: column; gap: 20px; }
+    .s-project .info-col .block h4 {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .s-project .info-col p { font-size: 20px; line-height: 1.5; color: rgba(10, 15, 31, 0.82); }
+    .s-project .info-col p b { color: var(--fg); font-weight: 600; }
+    .s-project .info-col ul { list-style: none; padding: 0; margin: 0; }
+    .s-project .info-col ul li {
+      font-size: 19px; line-height: 1.45; padding: 4px 0 4px 22px;
+      position: relative; color: rgba(10, 15, 31, 0.82);
+    }
+    .s-project .info-col ul li::before {
+      content: ''; position: absolute; left: 2px; top: 14px;
+      width: 8px; height: 8px; border-radius: 2px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+    .s-project .info-col ul li b { color: var(--fg); font-weight: 600; }
+    .s-project .info-col .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .s-project .info-col .chip {
+      font-size: 14px; padding: 5px 12px; border-radius: 999px;
+      background: rgba(1, 33, 105, 0.07); color: var(--accent);
+      font-weight: 500;
+    }
+    .s-project .info-col .stats { display: flex; gap: 32px; margin-top: 4px; flex-wrap: wrap; }
+    .s-project .info-col .stats .stat .n {
+      font-size: 40px; font-weight: 600;
+      letter-spacing: -0.02em; line-height: 1;
+    }
+    .s-project .info-col .stats .stat .l {
+      font-size: 13px; color: var(--muted);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .s-project .demo-col {
+      position: relative;
+      border-radius: 22px; overflow: hidden;
+      background: var(--dark-bg);
+      box-shadow: 0 20px 50px rgba(1, 33, 105, 0.22);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .s-project .demo-col iframe {
+      width: 100%; height: 100%; border: 0; display: block; background: #fff;
+    }
+    .s-project .demo-col.phone {
+      padding: 24px;
+      background:
+        radial-gradient(500px 400px at 50% 50%, rgba(0, 87, 184, 0.35), transparent 60%),
+        linear-gradient(135deg, #001a4a 0%, #00102e 100%);
+    }
+    .s-project .demo-col.phone iframe {
+      width: 360px; height: 100%; max-height: 720px;
+      border-radius: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+    .s-project .demo-col img { width: 100%; height: 100%; object-fit: cover; }
+    .s-project .demo-col img.contain { object-fit: contain; background: var(--dark-bg); }
+    .s-project .demo-col .demo-tag {
+      position: absolute; top: 14px; left: 14px;
+      font-size: 10px; padding: 5px 10px; border-radius: 4px;
+      background: rgba(255, 255, 255, 0.94); color: var(--accent);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      font-weight: 700; z-index: 2;
+    }
+    .s-project .demo-col .cta {
+      position: relative; z-index: 2;
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 18px 30px;
+      background: #fff; color: var(--accent);
+      border-radius: 14px;
+      font-size: 20px; font-weight: 600; letter-spacing: -0.005em;
+      text-decoration: none;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+    .s-project .demo-col .veil {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,16,46,0.08) 0%, rgba(0,16,46,0.35) 100%);
+      z-index: 1;
+    }
+
+    /* Logo plate — used by the three work-experience slides. */
+    .logo-plate {
+      position: relative;
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(700px 500px at 50% 40%, rgba(0, 87, 184, 0.18), transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, #eef1f7 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 80px;
+    }
+    .logo-plate img {
+      max-width: 70%; max-height: 60%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 24px rgba(1, 33, 105, 0.18));
+    }
+    .logo-plate .yr {
+      position: absolute; bottom: 28px; left: 28px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 13px; color: var(--accent); letter-spacing: 0.18em;
+      font-weight: 600;
+    }
+    .logo-plate .role {
+      position: absolute; bottom: 28px; right: 28px;
+      font-size: 13px; color: var(--muted); letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- 1 · Intro + Chatbot ───────────────────────────────────── -->
+  <section class="slide s-intro" data-label="About">
+    <div class="frame">
+      <div class="left">
+        <span class="mark">Portfolio &middot; Summer '26</span>
+        <h1 class="display">
+          Hi, I'm<br>
+          <span class="grad">Joonse.</span>
+        </h1>
+        <p class="tag">
+          Duke Fuqua MBA '27. Eight years shipping fintech, AI, and SaaS
+          to millions of users — software dev, AI startup founder, then PM.
+        </p>
+
+        <div class="facts">
+          <div class="fact">
+            <h4>Build</h4>
+            <p>Python, SQL, React, Claude API. I prefer shipping over slides.</p>
+          </div>
+          <div class="fact">
+            <h4>Product</h4>
+            <p>17.9M-user platform at Shinhan; founded an AI startup before that.</p>
+          </div>
+          <div class="fact">
+            <h4>Taste</h4>
+            <p>Interaction details — the kind users feel but can't name.</p>
+          </div>
+        </div>
+
+        <div class="contact">
+          <span><b>joonselim@gmail.com</b></span>
+          <a href="https://github.com/joonselim" target="_blank">github.com/joonselim ↗</a>
+          <a href="https://joonse.kr" target="_blank">joonse.kr ↗</a>
+        </div>
+      </div>
+
+      <div id="chatbot-root"></div>
+    </div>
+  </section>
+
+  <!-- 2 · Shinhan Bank ─────────────────────────────────────── -->
+  <section class="slide s-project white" data-label="Shinhan Bank">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Experience · 01 / 03 · 2021–2025</div>
+        <span class="category-tag">Product · Engineering</span>
+        <h3>Shinhan Bank — <span class="grad">17.9M-user</span> investment platform</h3>
+      </div>
+      <div class="links">
+        <span>Role</span>
+        <span style="color:var(--fg); font-weight:500;">PM, Investment Service · prev. SWE, Financial Service</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Context</h4>
+          <p>Joined as an engineer in 2021, promoted to Product Manager on the Investment Service team in 2024. Owned product decisions across one of Korea's largest financial platforms.</p>
+        </div>
+        <div class="block">
+          <h4>As Product Manager (2024–2025)</h4>
+          <ul>
+            <li>Improved system stability <b>+8%</b>; accelerated release velocity</li>
+            <li>Shifted <b>40%</b> of engineering capacity to mobile workflows → <b>+16%</b> feature adoption</li>
+            <li>Aligned <b>20+</b> teams on an API migration; replaced an inflated vendor quote with a resource-based rate, cutting fund-launch cost <b>50%</b></li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>As Software Developer (2021–2024)</h4>
+          <ul>
+            <li>Drove <b>13% YoY</b> pension asset growth via AI recommendation tuning</li>
+            <li>Engineered a SQL-based refund workflow resolving <b>$130M</b> in crisis transactions at <b>100%</b> regulatory compliance</li>
+            <li>Cut data processing time <b>40%</b></li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Stack</h4>
+          <div class="chips">
+            <span class="chip">Java · Spring</span>
+            <span class="chip">Oracle · SQL</span>
+            <span class="chip">AWS</span>
+            <span class="chip">Mobile-first PRDs</span>
+            <span class="chip">A/B Testing</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-col">
+        <div class="logo-plate">
+          <img src="img/shinhan.png" alt="Shinhan Bank">
+          <div class="yr">2021 — 2025</div>
+          <div class="role">Seoul</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Korean Medicine AI Startup ────────────────────────── -->
+  <section class="slide s-project" data-label="Korean Medicine AI Startup">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Experience · 02 / 03 · 2020–2021</div>
+        <span class="category-tag">Founder · Product Owner</span>
+        <h3>Korean Medicine AI — <span class="grad">0 → 1</span> diagnostic startup</h3>
+      </div>
+      <div class="links">
+        <span>Role</span>
+        <span style="color:var(--fg); font-weight:500;">Founder · Product Owner · Team of 3</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Thesis</h4>
+          <p>Oriental medicine intake forms ask 58 questions, most redundant. An ML-driven adaptive flow can ask far fewer — without losing diagnostic signal.</p>
+        </div>
+        <div class="block">
+          <h4>What I built</h4>
+          <ul>
+            <li>Productized the diagnostic engine into a deployable web + mobile service</li>
+            <li>Cut patient-facing questions from <b>58 → 15</b> (70% reduction) at <b>95%</b> diagnostic accuracy</li>
+            <li>Pitched financial models &amp; market analysis to senior government officials — secured a <b>$50K</b> grant</li>
+            <li>Led a 3-person team to MOUs with <b>two hospitals</b></li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Stack</h4>
+          <div class="chips">
+            <span class="chip">Python · ML</span>
+            <span class="chip">React</span>
+            <span class="chip">AWS</span>
+            <span class="chip">Healthtech UX</span>
+          </div>
+        </div>
+        <div class="block">
+          <h4>Why this mattered</h4>
+          <p>Productizing a research model is harder than building one. The startup taught me how to translate ambiguous business problems into shipped product — most of what I do as a PM today.</p>
+        </div>
+      </div>
+
+      <div class="demo-col">
+        <div class="logo-plate">
+          <img src="img/koreanmedicine.png" alt="Korean Medicine AI">
+          <div class="yr">2020 — 2021</div>
+          <div class="role">Gwangju</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · FORCS ────────────────────────────────────────────── -->
+  <section class="slide s-project white" data-label="FORCS">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Experience · 03 / 03 · 2017–2019</div>
+        <span class="category-tag">First PM role · e-document SaaS</span>
+        <h3>FORCS — <span class="grad">PaaS-to-SaaS</span> transition, my first PM role</h3>
+      </div>
+      <div class="links">
+        <span>Role</span>
+        <span style="color:var(--fg); font-weight:500;">Product Manager · military service substitute</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Context</h4>
+          <p>Korean enterprise SaaS company. Owned feature priority during a PaaS-to-SaaS transition while the GTM motion was being rebuilt around recurring revenue.</p>
+        </div>
+        <div class="block">
+          <h4>The work</h4>
+          <ul>
+            <li>Optimized signature-pad sizing &amp; approval workflows from field UX research</li>
+            <li>Field-interviewed bus drivers — turned tacit pain points into PRDs the engineering team could ship</li>
+            <li>Coordinated rollout across PaaS &amp; SaaS code paths during the migration</li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Outcomes</h4>
+          <div class="stats">
+            <div class="stat"><div class="n"><span class="grad">RWS</span></div><div class="l">Won Resorts World Sentosa</div></div>
+            <div class="stat"><div class="n"><span class="grad">50</span></div><div class="l">Enterprise subs · 2 months</div></div>
+          </div>
+        </div>
+        <div class="block">
+          <h4>Why this mattered</h4>
+          <p>First time owning the gap between "what users say they want" and "what the codebase can ship." The Resorts World Sentosa win came from interview notes, not a roadmap deck.</p>
+        </div>
+      </div>
+
+      <div class="demo-col">
+        <div class="logo-plate">
+          <img src="img/forcs.png" alt="FORCS">
+          <div class="yr">2017 — 2019</div>
+          <div class="role">Seoul</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Daisy Prospect Intelligence ───────────────────────── -->
+  <section class="slide s-project" data-label="Daisy Prospect Intelligence">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Project · 01 / 04 · 2026</div>
+        <span class="category-tag">Data product · Growth intel</span>
+        <h3>Daisy <span class="grad">Prospect Intelligence</span> — NYC building health score</h3>
+      </div>
+      <div class="links">
+        <span>Live map · Report · Kaggle</span>
+        <a href="https://joonselim.github.io/nyc-building-health-analysis/daisy_prospect_map.html" target="_blank">joonselim.github.io/…/prospect_map ↗</a>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Hypothesis</h4>
+          <p>Unresolved NYC HPD violations are a leading indicator of bad property management — buildings whose boards are frustrated <b>before</b> they start shopping for a replacement.</p>
+        </div>
+        <div class="block">
+          <h4>What I built</h4>
+          <ul>
+            <li>Ingested <b>81K</b> open HPD violations across <b>19K</b> buildings</li>
+            <li>Weighted composite score, 0–100, from 5 signals</li>
+            <li>Interactive prospect map — clusters, tiers, click-through</li>
+            <li>Shortlist of <b>28</b> "poorly managed" buildings to call this week</li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Stack</h4>
+          <div class="chips">
+            <span class="chip">Python · pandas</span>
+            <span class="chip">NYC HPD open data</span>
+            <span class="chip">Folium · Leaflet</span>
+            <span class="chip">Kaggle</span>
+          </div>
+        </div>
+        <div class="block">
+          <h4>Impact</h4>
+          <div class="stats">
+            <div class="stat"><div class="n"><span class="grad">19,170</span></div><div class="l">Buildings analyzed</div></div>
+            <div class="stat"><div class="n"><span class="grad">81,137</span></div><div class="l">Open violations</div></div>
+            <div class="stat"><div class="n"><span class="grad">28</span></div><div class="l">Hot prospects</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-col">
+        <div class="demo-tag">Live · interactive map</div>
+        <img src="screenshot/screenshot.png" alt="NYC prospect map preview">
+        <div class="veil"></div>
+        <a class="cta"
+           href="https://joonselim.github.io/nyc-building-health-analysis/daisy_prospect_map.html"
+           target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Open map →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Audible ──────────────────────────────────────────── -->
+  <section class="slide s-project white" data-label="Audible Read & Listen">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Project · 02 / 04</div>
+        <span class="category-tag">Product planning</span>
+        <h3>Audible <span class="grad">Read &amp; Listen</span> — scroll-to-seek prototype</h3>
+      </div>
+      <div class="links">
+        <span>Live demo</span>
+        <a href="https://audiblereadandlistenscrollmodify.vercel.app/player" target="_blank">audiblereadandlisten…vercel.app/player ↗</a>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Product thesis</h4>
+          <p>Audiobook text should not be chained to the playhead. Readers want to browse ahead, jump back, and read-without-listening — the current UX doesn't let them.</p>
+        </div>
+        <div class="block">
+          <h4>Interaction design</h4>
+          <ul>
+            <li>Locked (default) — text auto-scrolls with audio</li>
+            <li>First scroll surfaces a "scroll up to unlock" hint</li>
+            <li>Unlocked — text freezes, every word becomes tappable</li>
+            <li>Tap a word → playback seeks there, text re-locks</li>
+            <li>"Go back to 1:49" pill remembers the pre-seek position</li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Precedents studied</h4>
+          <div class="chips">
+            <span class="chip">YouTube Music · lyrics</span>
+            <span class="chip">Spotify · lyrics</span>
+            <span class="chip">Audible mobile app</span>
+          </div>
+        </div>
+        <div class="block">
+          <h4>Why</h4>
+          <p>Music apps solved scroll-to-seek on lyrics years ago. Long-form reading deserves the same freedom — and the fix is interaction design, not a new model or backend.</p>
+        </div>
+      </div>
+
+      <div class="demo-col phone">
+        <div class="demo-tag">Live · tap words to seek</div>
+        <iframe data-src="https://audiblereadandlistenscrollmodify.vercel.app/player"
+                title="Audible Read & Listen prototype"
+                allow="autoplay; fullscreen"
+                loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · SHIS ─────────────────────────────────────────────── -->
+  <section class="slide s-project" data-label="SHIS">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Project · 03 / 04 · Microsoft Atlanta Buildathon</div>
+        <span class="category-tag">Transformation · 2nd place</span>
+        <h3>SHIS — <span class="grad">Shift Handover</span> Intelligence System</h3>
+      </div>
+      <div class="links">
+        <span>Live demo · GitHub</span>
+        <a href="https://joonselim.github.io/sea_tech_summit_microsoft_buildathon/" target="_blank">joonselim.github.io/sea_tech_summit… ↗</a>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Transformation goal</h4>
+          <p>Replace an unreliable, paper-based shift-handover ritual with a structured, auditable, 2-minute workflow — standardized across operators, supervisors, and plant managers.</p>
+        </div>
+        <div class="block">
+          <h4>Interventions</h4>
+          <ul>
+            <li>Structured capture UI in place of paper notebooks</li>
+            <li>Bridge the silo between machine alarms and operator tacit knowledge</li>
+            <li>Auto-generated standardized shift report</li>
+            <li>Digital sign-off — accountability across every shift</li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Stakeholders &amp; scope</h4>
+          <div class="chips">
+            <span class="chip">Plant operators</span>
+            <span class="chip">Shift supervisors</span>
+            <span class="chip">Plant manager</span>
+            <span class="chip">Time-to-context &lt; 2 min</span>
+          </div>
+        </div>
+        <div class="block">
+          <h4>Why</h4>
+          <p>Manual handover is where production minutes disappear. Built as a POC for the Microsoft Atlanta Buildathon's AI-workforce-transformation track (won 2nd place) — the change is organizational, not just technological.</p>
+        </div>
+      </div>
+
+      <div class="demo-col">
+        <div class="demo-tag">Screen recording</div>
+        <img class="contain" src="gif/shis.gif" alt="SHIS dashboard in action">
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · Phone Agent ──────────────────────────────────────── -->
+  <section class="slide s-project white" data-label="Phone Agent">
+    <div class="project-head">
+      <div class="title-block">
+        <div class="meta">Project · 04 / 04</div>
+        <span class="category-tag">Development</span>
+        <h3>Phone Agent — <span class="grad">natural-language</span> Android control</h3>
+      </div>
+      <div class="links">
+        <span>GitHub</span>
+        <a href="https://github.com/joonselim/phone-agent-try" target="_blank">github.com/joonselim/phone-agent-try ↗</a>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-col">
+        <div class="block">
+          <h4>Intent</h4>
+          <p>Control an Android phone entirely by typing natural-language commands — "order me KFC", "open Uber to my office".</p>
+        </div>
+        <div class="block">
+          <h4>Architecture</h4>
+          <ul>
+            <li>Claude parses user intent and extracts parameters</li>
+            <li>Router dispatches to service handlers (Uber Eats, Amazon)</li>
+            <li>Droidrun + ADB drive the device without any user taps</li>
+          </ul>
+        </div>
+        <div class="block">
+          <h4>Stack</h4>
+          <div class="chips">
+            <span class="chip">Claude API (Sonnet)</span>
+            <span class="chip">Droidrun SDK</span>
+            <span class="chip">ADB</span>
+            <span class="chip">Python 3.12</span>
+            <span class="chip">uv</span>
+          </div>
+        </div>
+        <div class="block">
+          <h4>Why</h4>
+          <p>Hands-free device control is where LLMs actually pay off — describe what you want, the agent operates the app. A US-adapted fork of DDalkkak (Korean original), rebuilt around US services.</p>
+        </div>
+      </div>
+
+      <div class="demo-col">
+        <div class="demo-tag">Screen recording</div>
+        <img class="contain" src="gif/phone_agent.gif" alt="Phone Agent in action">
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+
+<!-- Lazy-load external demo iframes — set src only when the slide
+     becomes active, so the third-party demo isn't fetched on initial load. -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const stage = document.querySelector('deck-stage');
+    if (!stage) return;
+    stage.addEventListener('slidechange', (e) => {
+      const slide = e.detail && e.detail.slide;
+      if (!slide) return;
+      slide.querySelectorAll('iframe[data-src]').forEach((f) => {
+        if (!f.src && f.dataset.src) f.src = f.dataset.src;
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

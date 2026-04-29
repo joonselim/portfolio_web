@@ -1,4 +1,23 @@
 .env
+.env.local
+.env.*.local
 .DS_Store
 .claude/
 error.txt
+
+# ── Secrets (extra belt-and-suspenders) ──────────────
+*.key
+*.pem
+secrets/
+
+# ── Vercel / build ──────────────────────────────────
+.vercel
+node_modules/
+.next/
+dist/
+
+# ── Personal docs / backups (not meant for repo) ─────
+resume/
+refer/
+.~lock.*
+uploads/
