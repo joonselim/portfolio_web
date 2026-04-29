@@ -1,0 +1,2384 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1600" />
+  <title>Joonse Lim — Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="config.js"></script>
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────── */
+    :root {
+      /* Colors */
+      --navy:         #012169;
+      --navy-700:     #0a2a7a;
+      --navy-500:     #2a46a0;
+      --ink:          #0A1428;
+      --ink-2:        #1E293B;
+      --muted:        #64748B;
+      --mute-2:       #94A3B8;
+      --paper:        #FFFFFF;
+      --fog:          #F5F7FB;
+      --fog-2:        #EDF1F7;
+      --rule:         #E3E8F0;
+      --rule-strong:  #C8D1DE;
+      --accent:       #2563eb;
+
+      /* Fonts */
+      --sans:     "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --serif:    "Newsreader", "Iowan Old Style", "Apple Garamond", Georgia, serif;
+      --mono:     "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --pf:       var(--sans);
+      --pf-serif: var(--serif);
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────────── */
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0a0f1d;
+      color: var(--ink);
+      font-family: var(--pf);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ─── Stage ──────────────────────────────────────────────────── */
+    #stage-wrap {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background: #0a0f1d;
+    }
+
+    #stage {
+      width: 1600px;
+      height: 900px;
+      background: var(--paper);
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
+      overflow: hidden;
+      box-shadow: 0 40px 120px rgba(0, 0, 0, .5);
+      outline: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    /* ─── Pages ──────────────────────────────────────────────────── */
+    .page {
+      position: absolute;
+      inset: 0;
+      padding: 72px 88px;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .page.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* ─── Page Transitions ───────────────────────────────────────── */
+    .anim-fade .page {
+      transition: opacity .4s ease;
+    }
+
+    .anim-slide .page {
+      transform: translateX(40px);
+      transition: opacity .5s cubic-bezier(.22, .61, .36, 1),
+                  transform .5s cubic-bezier(.22, .61, .36, 1);
+    }
+    .anim-slide .page.active  { transform: translateX(0); }
+    .anim-slide .page.leaving { transform: translateX(-40px); opacity: 0; }
+
+    .anim-reveal .page {
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path .7s cubic-bezier(.76, 0, .24, 1),
+                  opacity .3s ease;
+    }
+    .anim-reveal .page.active { clip-path: inset(0 0 0 0); }
+
+    .anim-none .page { transition: none; }
+
+    /* ─── Typography ─────────────────────────────────────────────── */
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--navy);
+      font-weight: 500;
+    }
+    .eyebrow.muted { color: var(--muted); }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--ink);
+    }
+
+    .display { font-size: 104px; line-height: .95;   letter-spacing: -.04em;  font-weight: 600; }
+    .h1      { font-size: 64px;  line-height: 1.02;  letter-spacing: -.03em;  font-weight: 600; }
+    .h2      { font-size: 44px;  line-height: 1.08;  letter-spacing: -.025em; font-weight: 600; }
+    .h3      { font-size: 28px;  line-height: 1.15;  letter-spacing: -.015em; font-weight: 600; }
+    .h4      { font-size: 18px;  line-height: 1.3;   font-weight: 600; }
+
+    .body    { font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+    .body-lg { font-size: 19px; line-height: 1.55; color: var(--ink-2); }
+    .small   { font-size: 13px; line-height: 1.5;  color: var(--muted); }
+
+    .mono  { font-family: var(--mono); }
+    .serif { font-family: var(--pf-serif); }
+    .navy  { color: var(--navy); }
+    .muted { color: var(--muted); }
+
+    /* ─── Page Chrome ────────────────────────────────────────────── */
+    .page-mark {
+      position: absolute;
+      top: 36px;
+      left: 88px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .page-mark .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--navy);
+    }
+
+    .page-num {
+      position: absolute;
+      top: 36px;
+      right: 88px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--muted);
+    }
+
+    /* ─── Timeline Nav ───────────────────────────────────────────── */
+    #timeline {
+      position: absolute;
+      bottom: 28px;
+      left: 240px;            /* sits next to .kbd-hint which ends ~225px in */
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      z-index: 50;
+    }
+
+    .tl-item {
+      display: flex;
+      flex-direction: column-reverse;  /* label appears above bar */
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font-family: var(--mono);
+      color: var(--mute-2);
+      font-size: 13px;
+      letter-spacing: .12em;
+    }
+    .tl-item .bar {
+      width: 3px;
+      height: 18px;
+      background: var(--rule-strong);
+      transition: all .25s ease;
+    }
+    .tl-item:hover .bar { background: var(--navy); height: 22px; }
+    .tl-item.on    .bar { background: var(--navy); height: 28px; }
+
+    .tl-item .lbl {
+      opacity: 0;
+      transition: all .2s ease;
+      white-space: nowrap;
+      text-transform: uppercase;
+      pointer-events: none;
+      font-size: 12.5px;
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%) translateY(2px);
+    }
+    .tl-item { position: relative; }
+    .tl-item:hover .lbl,
+    .tl-item.on    .lbl {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      color: var(--navy);
+    }
+
+    /* ─── Keyboard Hint ──────────────────────────────────────────── */
+    .kbd-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 88px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--mute-2);
+    }
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--ink-2);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    /* First-page glow — make the arrow keys beat softly so visitors notice
+       they can use ← → to navigate. Only applied while on idx 0. */
+    .kbd-hint--first {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .kbd-hint--first .kbd {
+      border-color: var(--navy);
+      color: var(--navy);
+      animation: kbdGlow 1.6s ease-in-out infinite;
+    }
+    .kbd-hint--first .kbd:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+    @keyframes kbdGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(1, 33, 105, 0.0),
+                    0 1px 0 var(--rule);
+        transform: translateY(0);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(1, 33, 105, 0.18),
+                    0 0 14px 2px rgba(1, 33, 105, 0.35),
+                    0 1px 0 var(--rule);
+        transform: translateY(-1px);
+      }
+    }
+
+    /* ─── Reusable Components ────────────────────────────────────── */
+    .rule  { height: 1px; background: var(--rule); width: 100%; }
+    .vrule { width: 1px;  background: var(--rule); align-self: stretch; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      background: #fff;
+    }
+    .chip.navy { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .chip.soft {
+      background: var(--fog);
+      border-color: transparent;
+      color: var(--navy);
+      text-transform: none;
+      letter-spacing: 0;
+      font-family: var(--pf);
+      font-size: 12.5px;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .placeholder {
+      background:
+        repeating-linear-gradient(135deg, rgba(1, 33, 105, .06) 0 1px, transparent 1px 8px),
+        var(--fog);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      border: 1px solid var(--rule);
+    }
+
+    /* ─── Page 1 — Chatbot ───────────────────────────────────────── */
+    .chat-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 56px;
+      height: 100%;
+    }
+    .chat-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .chat-panel {
+      background: var(--fog);
+      border: 1px solid var(--rule);
+      border-radius: 18px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .chat-panel .hd {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .chat-panel .hd .av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+    .chat-log {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+    }
+    .bubble {
+      max-width: 86%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .bubble.bot {
+      background: #fff;
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+    }
+    .bubble.user {
+      background: var(--navy);
+      color: #fff;
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+    }
+    .bubble.typing {
+      background: #fff;
+      border: 1px solid var(--rule);
+      align-self: flex-start;
+      display: inline-flex;
+      gap: 4px;
+      padding: 14px;
+    }
+    .bubble.typing i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--mute-2);
+      display: block;
+      animation: tp 1.2s infinite;
+    }
+    .bubble.typing i:nth-child(2) { animation-delay: .15s; }
+    .bubble.typing i:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes tp {
+      0%, 60%, 100% { transform: translateY(0);    opacity: .4; }
+      30%            { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--rule);
+    }
+    .chat-input input {
+      flex: 1;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid var(--rule);
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+      color: var(--ink);
+    }
+    .chat-input input:focus { border-color: var(--navy); }
+    .chat-input button {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 10px;
+      border: 0;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 500;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: .01em;
+    }
+    .chat-input button:disabled { opacity: .5; }
+
+    .sugs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .sug {
+      padding: 7px 12px;
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      font-size: 12.5px;
+      color: var(--ink-2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .sug:hover { border-color: var(--navy); color: var(--navy); background: #fff; }
+
+    /* ─── Page 2 — Title ─────────────────────────────────────────── */
+    .title-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+    }
+    .big-name {
+      font-size: 180px;
+      line-height: .88;
+      letter-spacing: -.05em;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .big-name .amp {
+      color: var(--navy);
+      font-family: var(--pf-serif);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* ─── Page 3 — About ─────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 80px;
+      height: 100%;
+      align-items: center;
+    }
+    .avatar-ph {
+      width: 360px;
+      height: 460px;
+      border-radius: 4px;
+      background:
+        repeating-linear-gradient(135deg, rgba(1, 33, 105, .08) 0 1px, transparent 1px 10px),
+        var(--fog);
+    }
+
+    /* ─── Page 4 — Education ─────────────────────────────────────── */
+    .edu-card {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 36px 40px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 32px;
+      align-items: start;
+    }
+    .edu-card .crest {
+      width: 54px;
+      height: 54px;
+      border-radius: 6px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--pf-serif);
+      font-style: italic;
+      font-size: 26px;
+      font-weight: 500;
+    }
+    .edu-card.alt .crest { background: #9a1f1f; }
+
+    /* ─── Page 5 — Experience ────────────────────────────────────── */
+    .tl-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 180px;
+      gap: 40px;
+      padding: 22px 0;
+      border-top: 1px solid var(--rule);
+      align-items: center;
+    }
+    .tl-row:last-child { border-bottom: 1px solid var(--rule); }
+
+    .tl-row .yr  { font-family: var(--mono); font-size: 13px;   color: var(--navy);  letter-spacing: .04em; }
+    .tl-row .co  { font-size: 22px;          font-weight: 600;  color: var(--ink);   letter-spacing: -.01em; }
+    .tl-row .ro  { font-size: 13.5px; color: var(--muted); margin-top: 3px; }
+    .tl-row .loc { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: right; letter-spacing: .1em; text-transform: uppercase; }
+
+    /* ─── Page 6 — Shinhan ───────────────────────────────────────── */
+    .shinhan {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 52px;
+      height: 100%;
+    }
+    .metric-card {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 22px;
+      background: #fff;
+    }
+    .metric-card .v {
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--navy);
+      line-height: 1;
+      font-feature-settings: "tnum";
+    }
+    .metric-card .v .unit { font-size: 20px; color: var(--navy); font-weight: 500; }
+    .metric-card .k       { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+
+    .bullet {
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--rule);
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+    .bullet:last-child { border-bottom: 0; }
+    .bullet .n {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--navy);
+      letter-spacing: .08em;
+      padding-top: 3px;
+    }
+
+    /* ─── Page 9 — Projects ──────────────────────────────────────── */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 1fr 1fr;
+      gap: 20px;
+      height: calc(100% - 180px);
+    }
+    .proj {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 22px 22px 20px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      position: relative;
+      transition: border-color .2s, transform .2s;
+    }
+    .proj:hover { border-color: var(--navy); transform: translateY(-2px); }
+
+    .proj .idx  { position: absolute; top: 18px; right: 22px; font-family: var(--mono); font-size: 10.5px; color: var(--mute-2); letter-spacing: .1em; }
+    .proj h4    { font-size: 19px; margin-top: 6px; padding-right: 30px; }
+    .proj .desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; flex: 1; }
+    .proj .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+    .proj .tags span {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--navy);
+      border: 1px solid var(--rule);
+      padding: 3px 7px;
+      border-radius: 4px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .proj .viz { height: 70px; border-radius: 4px; background: var(--fog); margin-top: 2px; }
+
+    /* ─── Page 10 — Skills ───────────────────────────────────────── */
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px 40px;
+    }
+    .skill-col h4 {
+      font-size: 12px;
+      font-family: var(--mono);
+      color: var(--navy);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 12px;
+    }
+    .skill-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .skill-col li {
+      font-size: 14px;
+      color: var(--ink-2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .skill-col li .dots   { display: flex; gap: 3px; }
+    .skill-col li .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--rule-strong); display: block; }
+    .skill-col li .dots i.on { background: var(--navy); }
+
+    /* ─── Page 11 — Awards ───────────────────────────────────────── */
+    .heat {
+      display: grid;
+      grid-template-columns: repeat(26, 1fr);
+      gap: 3px;
+    }
+    .heat i    { aspect-ratio: 1/1; border-radius: 2px; background: var(--fog-2); }
+    .heat i.l1 { background: #cbd7ec; }
+    .heat i.l2 { background: #8ba3d2; }
+    .heat i.l3 { background: #3b5ca8; }
+    .heat i.l4 { background: var(--navy); }
+
+    /* ─── Page 12 — Contact ──────────────────────────────────────── */
+    .contact-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
+      padding: 18px 0;
+      border-top: 1px solid var(--rule);
+      align-items: baseline;
+    }
+    .contact-row:last-child { border-bottom: 1px solid var(--rule); }
+    .contact-row .k {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .contact-row .v { font-size: 20px; color: var(--ink); font-weight: 500; }
+    .contact-row .v a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .contact-row .v a:hover { color: var(--navy); border-color: var(--navy); }
+
+    /* ─── Utilities ──────────────────────────────────────────────── */
+    .stack   { display: flex; flex-direction: column; }
+    .row     { display: flex; }
+    .between { justify-content: space-between; }
+    .center  { align-items: center; }
+    .grow    { flex: 1; }
+
+    .gap-8  { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .gap-16 { gap: 16px; }
+    .gap-24 { gap: 24px; }
+    .gap-32 { gap: 32px; }
+
+    .mt-8  { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mt-32 { margin-top: 32px; }
+    .mt-48 { margin-top: 48px; }
+
+    /* ─── Keyframes ─────────────────────────────────────────────── */
+    @keyframes breathe   { 0%,100%{opacity:.85} 50%{opacity:1} }
+    @keyframes dotPulse  { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.6);opacity:.5} }
+    @keyframes floaty    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+    @keyframes shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    @keyframes caret     { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+    @keyframes fadeUp    { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+    @keyframes scaleIn   { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+    @keyframes drawLine  { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+    @keyframes glowPulse { 0%,100%{box-shadow:0 0 0 0 rgba(1,33,105,0)} 50%{box-shadow:0 0 24px 0 rgba(1,33,105,.12)} }
+    @keyframes traceDash { from{stroke-dashoffset:0} to{stroke-dashoffset:-400} }
+
+    /* ─── Always-on ambient ─────────────────────────────────────── */
+    .page-mark .dot { animation: dotPulse 2.6s ease-in-out infinite; }
+
+    .tl-item.on .bar {
+      background: linear-gradient(90deg, var(--navy), #3b5ca8, var(--navy));
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .online-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      margin-right: 6px;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    .chat-panel { position: relative; isolation: isolate; }
+    .chat-panel .border-trace {
+      position: absolute; inset: 0;
+      pointer-events: none; border-radius: 18px;
+      overflow: visible; z-index: 5;
+      width: 100%; height: 100%;
+    }
+    .chat-panel .border-trace rect {
+      fill: none; stroke: var(--navy); stroke-width: 2;
+      stroke-linecap: round; opacity: .95;
+      filter: drop-shadow(0 0 6px rgba(1,33,105,.7)) drop-shadow(0 0 14px rgba(37,99,235,.45));
+      animation: traceDash 5.5s linear infinite;
+      vector-effect: non-scaling-stroke;
+    }
+    .chat-panel .hd .av {
+      position: relative;
+      animation: floaty 5.5s ease-in-out infinite;
+    }
+    .chat-panel .hd .av::after {
+      content: "";
+      position: absolute; inset: -3px;
+      border-radius: 50%;
+      border: 1px solid var(--navy);
+      opacity: .35;
+      animation: breathe 2.8s ease-in-out infinite;
+    }
+
+    .name-dot { display: inline-block; animation: breathe 3s ease-in-out infinite; }
+    .caret {
+      display: inline-block;
+      width: .08em; height: .95em;
+      background: var(--navy);
+      margin-left: .08em; vertical-align: -.12em;
+      animation: caret 1.1s steps(1) infinite;
+    }
+
+    /* ─── Page-enter animations ─────────────────────────────────── */
+    .page.active .enter        { animation: fadeUp .7s cubic-bezier(.22,.61,.36,1) both; }
+    .page.active .enter-1      { animation-delay: .05s; }
+    .page.active .enter-2      { animation-delay: .15s; }
+    .page.active .enter-3      { animation-delay: .25s; }
+    .page.active .enter-4      { animation-delay: .35s; }
+    .page.active .enter-5      { animation-delay: .45s; }
+    .page.active .enter-6      { animation-delay: .55s; }
+    .page.active .enter-scale  { animation: scaleIn .8s cubic-bezier(.22,.61,.36,1) both; }
+
+    .hero-underline { position: relative; display: inline-block; }
+    .hero-underline::after {
+      content: ""; position: absolute;
+      left: 0; right: 0; bottom: -6px; height: 2px;
+      background: var(--navy);
+      transform-origin: left center; transform: scaleX(0);
+    }
+    .page.active .hero-underline::after {
+      animation: drawLine .9s .4s cubic-bezier(.76,0,.24,1) forwards;
+    }
+
+    /* ─── Per-component animations ──────────────────────────────── */
+    .page.active .metric-card              { animation: glowPulse 4s ease-in-out infinite; }
+    .page.active .metric-card:nth-child(2) { animation-delay: 1s; }
+    .page.active .metric-card:nth-child(3) { animation-delay: 2s; }
+    .page.active .metric-card:nth-child(4) { animation-delay: 3s; }
+
+    .page.active .tl-row { animation: fadeUp .6s both; animation-delay: calc(.1s * var(--i, 0)); }
+
+    .page.active .skill-col li .dots i.on              { animation: scaleIn .5s both; }
+    .page.active .skill-col li .dots i.on:nth-child(2) { animation-delay: .05s; }
+    .page.active .skill-col li .dots i.on:nth-child(3) { animation-delay: .1s; }
+    .page.active .skill-col li .dots i.on:nth-child(4) { animation-delay: .15s; }
+    .page.active .skill-col li .dots i.on:nth-child(5) { animation-delay: .2s; }
+
+    .page.active .heat i { animation: fadeIn .6s both; animation-delay: calc(.003s * var(--hi, 0)); }
+
+    .page.active .bullet { animation: fadeUp .55s both; animation-delay: calc(.08s * var(--bi, 0)); }
+
+    .proj .viz { position: relative; overflow: hidden; }
+    .proj .viz::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(110deg, transparent 30%, rgba(1,33,105,.08) 50%, transparent 70%);
+      background-size: 200% 100%;
+      animation: shimmer 6s linear infinite;
+    }
+
+    .avatar-ph { position: relative; overflow: hidden; }
+    .avatar-ph::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(110deg, transparent 40%, rgba(1,33,105,.06) 50%, transparent 60%);
+      background-size: 200% 100%;
+      animation: shimmer 8s linear infinite;
+    }
+
+    .edu-card .crest { transition: transform .5s; }
+    .edu-card:hover .crest { transform: rotate(-6deg) scale(1.05); }
+    .chip { transition: all .2s; }
+    .chip:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ─── Project case-study layout ─────────────────────────────── */
+    .case-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 48px;
+      flex: 1;
+      min-height: 0;
+      margin-top: 24px;
+    }
+    .case-info { display: flex; flex-direction: column; gap: 18px; overflow: hidden; }
+    .case-info .block h4 {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--navy); margin-bottom: 7px;
+    }
+    .case-info .block p { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+    .case-info .block ul { list-style: none; padding: 0; margin: 0; }
+    .case-info .block ul li {
+      font-size: 14px; line-height: 1.45;
+      padding: 3px 0 3px 18px; position: relative; color: var(--ink-2);
+    }
+    .case-info .block ul li::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 7px; height: 7px; border-radius: 2px;
+      background: linear-gradient(135deg, var(--navy), var(--accent));
+    }
+    .case-demo {
+      position: relative;
+      border-radius: 16px; overflow: hidden;
+      background: var(--ink);
+      box-shadow: 0 12px 40px rgba(1,33,105,.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .case-demo.phone { padding: 20px; }
+    .case-demo.phone iframe {
+      width: 340px; height: 100%; max-height: 680px;
+      border-radius: 24px; border: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    .case-demo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .case-demo .demo-tag {
+      position: absolute; top: 12px; left: 12px;
+      font-size: 10px; padding: 4px 9px; border-radius: 4px;
+      background: rgba(255,255,255,.92); color: var(--navy);
+      letter-spacing: .14em; text-transform: uppercase;
+      font-weight: 700; z-index: 2;
+    }
+    .case-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 40px; padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+    }
+    .case-head .cat {
+      display: inline-block; margin-bottom: 10px;
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      background: rgba(1,33,105,.07); color: var(--navy);
+    }
+    .case-head .links {
+      display: flex; flex-direction: column; gap: 3px; align-items: flex-end;
+      font-size: 12px; color: var(--muted);
+    }
+    .case-head .links a {
+      color: var(--ink); text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 11.5px;
+    }
+
+    /* ─── PRINT-FIRST OVERRIDES (index3.html only) ──────────────────
+       On screen and in print, render every .page stacked top-to-bottom
+       at the authored 1600×900 size. The on-screen scale-to-fit stage
+       from index.html doesn't apply here — this file exists so the
+       browser's Save-as-PDF produces one clean sheet per slide. */
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #d6dae3 !important;
+      height: auto !important;
+      overflow-x: hidden;
+    }
+    #stage-wrap {
+      position: static !important;
+      width: 100% !important;
+      height: auto !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 0;
+    }
+    #stage {
+      position: static !important;
+      transform: none !important;
+      width: 1600px !important;
+      height: auto !important;
+      background: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+      overflow: visible !important;
+      display: contents;
+    }
+    .print-page.page {
+      position: relative !important;
+      inset: auto !important;
+      width: 1600px !important;
+      height: 900px !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      overflow: hidden !important;
+      background: var(--paper) !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      animation: none !important;
+      transition: none !important;
+    }
+    /* Disable enter/leave/scale animations inside print pages */
+    .print-page .enter,
+    .print-page .enter-scale,
+    .print-page .border-trace,
+    .print-page * {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+    }
+
+    @page {
+      size: 1600px 900px;
+      margin: 0;
+    }
+    @media print {
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Reset the stage: no scaling, no fixed size, no shadow. */
+      #stage-wrap, #stage {
+        position: static !important;
+        transform: none !important;
+        width: auto !important;
+        height: auto !important;
+        background: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        overflow: visible !important;
+        inset: auto !important;
+      }
+
+      /* Every slide visible, in document flow, at design size. */
+      .page {
+        position: relative !important;
+        inset: auto !important;
+        width: 1600px !important;
+        height: 900px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        overflow: hidden !important;
+        page-break-after: always;
+        break-after: page;
+        break-inside: avoid;
+        background: var(--paper) !important;
+      }
+      .page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      /* Hide on-screen chrome (timeline, hint, tweaks). */
+      #timeline,
+      .kbd-hint,
+      .twk-panel,
+      .twk-toggle {
+        display: none !important;
+      }
+
+      /* No motion in print. */
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      /* Force background colors and gradients to render. */
+      * {
+        -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="stage-wrap">
+    <div id="stage" class="anim-fade">
+      <div id="root"></div>
+    </div>
+  </div>
+
+  <!-- Scale stage to viewport -->
+  <script>
+    (function () {
+      const stage = document.getElementById('stage');
+      function fit() {
+        const sx = window.innerWidth  / 1600;
+        const sy = window.innerHeight / 900;
+        const s  = Math.min(sx, sy);
+        const dx = (window.innerWidth  - 1600 * s) / 2;
+        const dy = (window.innerHeight - 900  * s) / 2;
+        stage.style.transform = `translate(${dx}px, ${dy}px) scale(${s})`;
+      }
+      window.addEventListener('resize', fit);
+      fit();
+    })();
+  </script>
+
+  <!-- ─── tweaks-panel.jsx ────────────────────────────────────────── -->
+  <script type="text/babel">
+// tweaks-panel.jsx — Reusable Tweaks shell + form-control helpers.
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;height:22px;
+    border-radius:6px;cursor:default;padding:0}
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+`;
+
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((key, val) => {
+    setValues((prev) => ({ ...prev, [key]: val }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: val } }, '*');
+  }, []);
+  return [values, setTweak];
+}
+
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel"
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">{children}</div>
+      </div>
+    </>
+  );
+}
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function TweakColor({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <input type="color" className="twk-swatch" value={value}
+             onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+  </script>
+
+  <!-- ─── chatbot.jsx ─────────────────────────────────────────────── -->
+  <script type="text/babel">
+// chatbot.jsx — Claude-powered chatbot for page 1
+
+const JOONSE_BIO = `You are speaking AS Joonse Lim on his personal portfolio site. Answer in the first person ("I", "my", "me"). Never refer to Joonse in the third person; if you'd be tempted to write "Joonse did X", write "I did X" instead. Concise, thoughtful, product-manager-ish tone. Keep answers short (2 to 4 sentences) unless asked for detail. If you don't know something, say so and suggest emailing joonselim@gmail.com.
+
+About Joonse Lim:
+- Duke University, The Fuqua School of Business — MBA, May 2027. Merit-based scholarship recipient. Tech Club (Industry Cabinet).
+- Korea University — B.Eng. Computer Science & Engineering, 2021. 4th place at UCPC (national algorithm competition). Bronze Prize at Nexon Game Design Competition.
+- US Permanent Resident. Email joonselim@gmail.com. Phone (213) 278-9295. Personal site joonse.kr.
+
+Experience:
+- Shinhan Bank, Seoul (Jan 2024–Apr 2025) — Product Manager, Investment Service. Led product initiatives across a 17.9M-user financial platform, improved stability 8%, shifted 40% of engineering capacity to mobile, aligned 20+ teams on an API migration replacing an inflated vendor quote with a resource-based rate, cut fund launch cost 50%.
+- Shinhan Bank (Aug 2021–Jan 2024) — Software Developer, Financial Service. Drove 13% YoY pension assets increase by integrating an AI recommendation engine. Engineered a SQL-based refund workflow resolving $130M in crisis transactions with 100% regulatory compliance. Cut data processing time 40%.
+- Korean Medicine AI Startup, self-founded (Sep 2020–Jul 2021). Founder / Product Owner. AI diagnostic tool reducing patient questions from 58 to 15 (70% reduction) with 95% accuracy. Secured a $50K government grant. Signed MOUs with two hospitals.
+- FORCS, Seoul (Jun 2017–Sep 2019) — Product Manager, e-document SaaS, military service substitute. Led PaaS-to-SaaS transition that won Resorts World Sentosa (Singapore's largest casino). Field-interviewed bus drivers into product requirements; 50 enterprise subs in two months.
+
+AI / side projects:
+- 2nd of 20 teams at SEA MBA Tech Summit AI Workforce Transformation Buildathon (Microsoft Atlanta), built a Copilot prototype.
+- Built an Android phone agent that executes natural-language commands end-to-end using the Claude API.
+- Daisy Prospect Intelligence (2026): scored 19,170 NYC buildings from public HPD violations to surface 28 hot prospects.
+- Audible Read & Listen (2026): scroll-to-seek prototype for audiobook text.
+- Contributor to gym-mupen64plus (open-source N64 RL environment built on OpenAI Gym).
+
+Currently working on:
+- I'm currently studying AI Agent design patterns. Reading papers, building small agents end-to-end with the Claude API, and re-implementing patterns like ReAct, planner-executor, and tool-routed agents to internalize them.
+- The Android phone agent and the Daisy NYC prospect-intelligence project are the most recent things I shipped in that direction.
+- This portfolio site itself is one of the small experiments: a Claude-powered chatbot grounded in my own resume.
+
+If asked "what kind of project are you working on", lead with: "I'm currently studying AI Agent design patterns." Then briefly mention the other projects above.
+
+Skills:
+- Product: Feature Prioritization, OKRs, Product Strategy, UX Review, A/B Testing, Roadmap Planning.
+- Technical: Python, SQL, AWS, React, Machine Learning, Figma, Advanced Excel, Tableau, Power BI.
+
+Style:
+- First person, always. Say "I", "my", "me", never "Joonse" or "he".
+- Product-savvy, thoughtful. Not hypey.
+- Plain language. No emoji. No bullet-listing unless asked.
+- Do NOT use em-dashes (—) or en-dashes (–). Use periods, commas, parentheses, or "to" for ranges. Hyphens (-) inside compound words are fine.
+`;
+
+const SUGGESTIONS = [
+  "What's Joonse's background?",
+  "What kind of project are you working on?",
+  "Why an MBA after being a PM?",
+  "What kind of roles is Joonse looking for?",
+  "Tell me about the $130M refund incident in Shinhan.",
+];
+
+function Chatbot() {
+  const [messages, setMessages] = React.useState([
+    { role: "bot", text: "Hi, I'm an AI assistant trained on Joonse's background. Ask me anything — his experience, his MBA, how he thinks about product." },
+  ]);
+  const [input, setInput] = React.useState("");
+  const [busy, setBusy] = React.useState(false);
+  const logRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
+  }, [messages, busy]);
+
+  const ask = async (q) => {
+    const question = (q || input).trim();
+    if (!question || busy) return;
+    setInput("");
+    const nextMsgs = [...messages, { role: "user", text: question }];
+    setMessages(nextMsgs);
+    setBusy(true);
+    try {
+      const history = nextMsgs
+        .filter((m) => m.role !== "system")
+        .map((m) => ({
+          role: m.role === "bot" ? "assistant" : "user",
+          content: m.text,
+        }));
+      const prompt = `${JOONSE_BIO}\n\nConversation so far:\n${history
+        .map((m) => `${m.role === "assistant" ? "Assistant" : "User"}: ${m.content}`)
+        .join("\n")}\n\nAssistant:`;
+      const reply = await window.claude.complete(prompt);
+      setMessages((m) => [...m, { role: "bot", text: reply.trim() }]);
+    } catch (e) {
+      setMessages((m) => [
+        ...m,
+        { role: "bot", text: `Error: ${e.message}` },
+      ]);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+    <div className="page-mark"><span className="dot"></span>Title</div>
+    <div className="page-num">01 / 12</div>
+    <div className="chat-wrap">
+      <div className="chat-left">
+        <div>
+          <div className="eyebrow muted enter enter-1">Portfolio · 2026</div>
+          <div className="big-name mt-16 enter enter-2" style={{fontSize:160, lineHeight:.88}}>
+            Joonse<br/>
+            Lim<span className="amp name-dot" style={{fontSize:108, marginLeft:8, verticalAlign:"baseline", color:"var(--navy)"}}>.</span>
+          </div>
+          <p className="body-lg mt-32 enter enter-3" style={{ maxWidth: 600, color: "var(--muted)" }}>
+            Product Manager · Software Developer · US Permanent Resident.<br/>
+            7 years shipping fintech, AI, and SaaS to millions of users.
+          </p>
+          <div className="row gap-12 mt-20 enter enter-4" style={{alignItems:"center", flexWrap:"wrap"}}>
+            <span className="mono small" style={{color:"var(--ink-2)"}}>Duke MBA '27 · Korea University '21 · joonse.kr · joonselim@gmail.com</span>
+          </div>
+          <div className="mono small mt-12 enter enter-4" style={{color:"var(--muted)",letterSpacing:".04em"}}>
+            View it on web. It's better :) <a href="https://portfolio-web-beta-lovat.vercel.app" target="_blank" rel="noreferrer" style={{color:"var(--navy)",textDecoration:"underline",textUnderlineOffset:3}}>portfolio-web-beta-lovat.vercel.app</a>
+          </div>
+        </div>
+        <div className="stack gap-8">
+          <div className="tag">Or ask the assistant — try one of these</div>
+          <div className="sugs">
+            {SUGGESTIONS.map((s) => (
+              <button key={s} className="sug" onClick={() => ask(s)} disabled={busy}>{s}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="chat-panel">
+        <svg className="border-trace" preserveAspectRatio="none" viewBox="0 0 100 100">
+          <rect x="0.5" y="0.5" width="99" height="99" rx="5" ry="5" strokeDasharray="10 390" pathLength="400" />
+        </svg>
+        <div className="hd">
+          <div className="av" style={{overflow:"hidden",padding:0}}>
+            <img src="img/avatar.jpg" alt="Joonse Lim"
+                 style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center center",display:"block"}} />
+          </div>
+          <div className="stack">
+            <div style={{ fontWeight: 600, fontSize: 14 }}>Ask Joonse</div>
+            <div className="small" style={{ fontSize: 11.5 }}>Powered by Claude · trained on résumé</div>
+          </div>
+          <div className="grow"></div>
+          <div className="tag" style={{ fontSize: 10 }}><span className="online-dot"></span>Online</div>
+        </div>
+        <div className="chat-log" ref={logRef}>
+          {messages.map((m, i) => (
+            <div key={i} className={`bubble ${m.role}`}>{m.text}</div>
+          ))}
+          {busy && (
+            <div className="bubble typing"><i></i><i></i><i></i></div>
+          )}
+        </div>
+        <form className="chat-input" onSubmit={(e) => { e.preventDefault(); ask(); }}>
+          <input
+            placeholder="Ask about Joonse's background, projects, PM philosophy…"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={busy}
+            autoFocus
+          />
+          <button type="submit" disabled={busy || !input.trim()}>Send</button>
+        </form>
+      </div>
+    </div>
+    </>
+  );
+}
+
+window.Chatbot = Chatbot;
+  </script>
+
+  <!-- ─── pages.jsx ───────────────────────────────────────────────── -->
+  <script type="text/babel">
+// pages.jsx — pages 2-12
+
+// Animated number counter: ticks through random digits, then settles to target
+function Counter({to, duration=1400, suffix="", prefix="", decimals=0}) {
+  const [v, setV] = React.useState(0);
+  React.useEffect(() => {
+    let raf, start;
+    const steps = 18;
+    let step = 0;
+    const tickId = setInterval(() => {
+      step++;
+      const rand = Math.random() * to * 1.3;
+      setV(rand);
+      if (step >= steps) {
+        clearInterval(tickId);
+        start = performance.now();
+        const animate = (t) => {
+          const p = Math.min(1, (t - start)/500);
+          const eased = 1 - Math.pow(1-p, 3);
+          setV(to * eased);
+          if (p < 1) raf = requestAnimationFrame(animate);
+          else setV(to);
+        };
+        raf = requestAnimationFrame(animate);
+      }
+    }, duration/steps);
+    return () => { clearInterval(tickId); if (raf) cancelAnimationFrame(raf); };
+  }, [to]);
+  const display = decimals > 0 ? v.toFixed(decimals) : Math.round(v).toString();
+  return <span style={{fontVariantNumeric:"tabular-nums"}}>{prefix}{display}{suffix}</span>;
+}
+
+function PageMark({n, label}) {
+  return (
+    <>
+      <div className="page-mark"><span className="dot"></span>{label}</div>
+      <div className="page-num">{String(n).padStart(2,'0')} / 12</div>
+    </>
+  );
+}
+
+// (Page 2 "Title" was merged into the Chatbot page — name on the left, chat on the right.)
+
+// Page 3 — About
+// Page 2 — About + Education + Experience (merged)
+function PageAbout() {
+  const rows = [
+    { yr:"2024 — 2025", co:"Shinhan Bank", ro:"Product Manager, Investment Service", loc:"Seoul" },
+    { yr:"2021 — 2024", co:"Shinhan Bank", ro:"Software Developer, Financial Service", loc:"Seoul" },
+    { yr:"2020 — 2021", co:"Korean Medicine AI (self-founded)", ro:"Founder, Product Owner", loc:"Gwangju" },
+    { yr:"2017 — 2019", co:"FORCS", ro:"Product Manager · e-document SaaS", loc:"Seoul" },
+  ];
+  const eduCardStyle = {padding:"14px 20px", gridTemplateColumns:"44px 1fr auto", gap:20};
+  const crestStyle   = {background:"#fff",border:"1px solid var(--rule)",padding:5,overflow:"hidden",width:44,height:44};
+  return (
+    <div>
+      <PageMark n={2} label="About" />
+
+      <div style={{display:"grid", gridTemplateColumns:"1fr 1.45fr", gap:56, height:"100%", alignItems:"start"}}>
+
+        {/* LEFT — About */}
+        <div className="stack gap-16">
+          <div className="avatar-ph enter enter-1" style={{width:"100%", maxWidth:340, height:380}} title="Joonse Lim">
+            <img src="img/profile.jpg" alt="Joonse Lim"
+                 style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 22%",display:"block"}} />
+          </div>
+          <div className="eyebrow enter enter-1">About</div>
+          <div className="h2 enter enter-2" style={{maxWidth:540, fontSize:36, lineHeight:1.15}}>
+            I'm a PM who still writes the <span style={{fontFamily:"var(--pf-serif)", fontStyle:"italic", color:"var(--navy)", fontWeight:400}}>code</span>, when something's on fire.
+          </div>
+          <div className="body enter enter-3" style={{maxWidth:540}}>
+            Started as an engineer, shipped my own AI startup, then ran product at one of Korea's largest banks.
+            I'm happiest at the intersection of ambiguous business problems and technical systems. Translating between the two is most of the job.
+            <br/><br/>
+            Looking for <span style={{color:"var(--navy)",fontWeight:600}}>Product · Tech / Fin / AI</span>.
+          </div>
+        </div>
+
+        {/* RIGHT — Education + Experience */}
+        <div className="stack gap-16">
+          <div className="enter enter-1">
+            <div className="eyebrow">Background</div>
+            <div className="h2 mt-8" style={{maxWidth:760, fontSize:34, lineHeight:1.15}}>
+              Engineer by training, then <span style={{fontFamily:"var(--pf-serif)",fontStyle:"italic",color:"var(--navy)",fontWeight:400}}>7 years</span> shipping product.
+            </div>
+          </div>
+
+          {/* Education */}
+          <div>
+            <div className="row between center">
+              <div className="tag">Education</div>
+              <div className="mono small muted">CS → MBA</div>
+            </div>
+            <div className="stack gap-8 mt-8">
+              <div className="edu-card enter enter-2" style={eduCardStyle}>
+                <div className="crest" style={crestStyle}>
+                  <img src="img/duke_univ.png" alt="Duke University"
+                       style={{width:"100%",height:"100%",objectFit:"contain"}} />
+                </div>
+                <div className="stack gap-2">
+                  <div className="row between center">
+                    <div className="h3" style={{fontSize:18}}>Duke Fuqua — MBA</div>
+                    <div className="mono small">MAY 2027</div>
+                  </div>
+                  <div className="small" style={{color:"var(--muted)"}}>Tech Club · Industry Cabinet · Merit Scholarship (80%) · GMAT FE 695 (1.4%)</div>
+                </div>
+                <div className="tag" style={{fontSize:9}}>#01</div>
+              </div>
+              <div className="edu-card alt enter enter-3" style={eduCardStyle}>
+                <div className="crest" style={crestStyle}>
+                  <img src="img/korea_univ.png" alt="Korea University"
+                       style={{width:"100%",height:"100%",objectFit:"contain"}} />
+                </div>
+                <div className="stack gap-2">
+                  <div className="row between center">
+                    <div className="h3" style={{fontSize:18}}>Korea University — Computer Engineering</div>
+                    <div className="mono small">JUL 2021</div>
+                  </div>
+                  <div className="small" style={{color:"var(--muted)"}}>ICPC Algorithm Competition · International Qualifier (Top 4 nationally) · Bronze · Nexon Game Design</div>
+                </div>
+                <div className="tag" style={{fontSize:9}}>#02</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div className="stack" style={{flex:1, minHeight:0}}>
+            <div className="row between center">
+              <div className="tag">Experience</div>
+              <div className="mono small muted">2017 → 2025 · engineering → PM → founder → PM</div>
+            </div>
+            <div className="stack" style={{flex:1, justifyContent:"space-between", marginTop:8}}>
+              {rows.map((r,i)=>(
+                <div className="tl-row enter enter-4" key={i} style={{"--i": i+4, padding:"18px 0", gap:28, gridTemplateColumns:"130px 1fr 200px"}}>
+                  <div className="yr" style={{fontSize:14}}>{r.yr}</div>
+                  <div><div className="co" style={{fontSize:20}}>{r.co}</div><div className="ro" style={{fontSize:14, marginTop:4}}>{r.ro}</div></div>
+                  <div className="loc" style={{fontSize:12}}>{r.loc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// Page 6 — Shinhan Bank deep dive
+function PageShinhan() {
+  return (
+    <div>
+      <PageMark n={3} label="Case · Shinhan Bank" />
+      <div className="shinhan">
+        <div className="stack gap-24">
+          <div className="eyebrow enter enter-1">Case Study · 01</div>
+          <div className="h2 enter enter-2">Shinhan Bank<br/><span style={{color:"var(--muted)"}}>Product Manager &amp; Software Developer</span></div>
+          <div className="body-lg enter enter-3" style={{maxWidth:600}}>
+            Led product across a <b>17.9M-user</b> financial platform — from a $130M crisis refund workflow as an engineer, to portfolio-wide prioritization as a PM.
+          </div>
+          <div className="stack mt-16">
+            <div className="tag enter enter-4" style={{marginBottom:8}}>Selected outcomes</div>
+            <div className="bullet" style={{"--bi":1}}><div className="n">01</div><div>Led product initiatives across a 17.9M-user platform, improving system stability by <b>8%</b> and accelerating release velocity.</div></div>
+            <div className="bullet" style={{"--bi":2}}><div className="n">02</div><div>Shifted <b>40%</b> of engineering capacity to critical mobile workflows, increasing feature adoption <b>16%</b>.</div></div>
+            <div className="bullet" style={{"--bi":3}}><div className="n">03</div><div>Aligned 20+ teams on an API migration by negotiating vendor contract terms — replaced an inflated quote with a resource-based rate.</div></div>
+            <div className="bullet" style={{"--bi":4}}><div className="n">04</div><div>Resolved <b>$130M</b> in crisis transactions by engineering a SQL-based refund workflow with automated clawback — 100% regulatory compliance.</div></div>
+          </div>
+        </div>
+        <div className="stack gap-16" style={{alignContent:"start"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+            <div className="metric-card enter enter-scale"><div className="v"><Counter to={17.9} decimals={1} /><span className="unit">M</span></div><div className="k">Users on the platform I owned product decisions for</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".1s"}}><div className="v">$<Counter to={130} /><span className="unit">M</span></div><div className="k">In crisis transactions resolved via an engineered SQL refund workflow</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".2s"}}><div className="v"><Counter to={13} /><span className="unit">% YoY</span></div><div className="k">Pension client asset growth from AI recommendation tuning</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".3s"}}><div className="v"><Counter to={50} /><span className="unit">%</span></div><div className="k">Fund launch cost reduction via standardized PRD templates</div></div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+            <img src="img/shinhan.png" alt="Shinhan Bank"
+                 style={{width:"100%",borderRadius:8,boxShadow:"0 4px 16px rgba(1,33,105,0.12)",display:"block"}} />
+            <img src="img/shinhan2.png" alt="Shinhan Bank — investment service"
+                 style={{width:"100%",borderRadius:8,boxShadow:"0 4px 16px rgba(1,33,105,0.12)",display:"block"}} />
+          </div>
+          <div className="row gap-8" style={{flexWrap:"wrap"}}>
+            <span className="chip">Prioritization</span>
+            <span className="chip">API Migration</span>
+            <span className="chip">AI Integration</span>
+            <span className="chip">Cross-Functional</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 7 — AI Startup
+function PageStartup() {
+  return (
+    <div>
+      <PageMark n={4} label="Case · AI Startup" />
+      <div className="row" style={{height:"100%",gap:52}}>
+        {/* LEFT — text + role + 3 bullets */}
+        <div className="stack gap-20" style={{flex:"1 1 0",justifyContent:"space-between"}}>
+          <div className="stack gap-20">
+            <div>
+              <div className="eyebrow enter enter-1">Case Study · 02 · Founder</div>
+              <div className="h2 mt-16 enter enter-2">Korean Medicine<br/>AI Startup<span className="navy name-dot">.</span></div>
+            </div>
+            <div className="body-lg enter enter-3" style={{maxWidth:540,color:"var(--muted)"}}>
+              Founded and launched an AI diagnostic tool for oriental medicine. From zero to two hospital MOUs and a $50K government grant in under a year.
+              <br/><br/>
+              <span style={{color:"var(--ink)"}}><b>For the engine:</b></span> reduced patient-facing questions from <span style={{color:"var(--navy)",fontWeight:600}}><Counter to={58} /> to <Counter to={15} /></span> (a 70% drop) while holding 95% diagnostic accuracy via supervised learning.
+            </div>
+            <div className="rule"></div>
+            <div className="stack gap-14">
+              <div className="bullet" style={{"--bi":1}}><div className="n">01</div><div>Productized the diagnostic engine into a deployable web + mobile service.</div></div>
+              <div className="bullet" style={{"--bi":2}}><div className="n">02</div><div>Presented financial models and market analysis to senior government officials. Secured a $50K grant.</div></div>
+              <div className="bullet" style={{"--bi":3}}><div className="n">03</div><div>Led a three-person team to MOUs with two hospitals.</div></div>
+            </div>
+          </div>
+          <div className="stack gap-4 enter enter-5">
+            <div className="tag">Role</div>
+            <div className="h4">Founder · Product Owner</div>
+            <div className="small">Sep 2020 – Jul 2021 · Team of 3</div>
+          </div>
+        </div>
+
+        <div className="vrule"></div>
+
+        {/* RIGHT — both images stacked */}
+        <div className="stack gap-16 enter enter-scale" style={{flex:"1 1 0",justifyContent:"center"}}>
+          <img src="img/koreanmedicine.png" alt="Korean Medicine AI"
+               style={{width:"100%",maxWidth:560,borderRadius:10,boxShadow:"0 6px 22px rgba(1,33,105,0.14)",display:"block"}} />
+          <img src="img/koreanmedicine2.png" alt="Korean Medicine AI — diagnostic flow"
+               style={{width:"100%",maxWidth:560,borderRadius:10,boxShadow:"0 6px 22px rgba(1,33,105,0.14)",display:"block"}} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 8 — FORCS
+function PageForcs() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={5} label="Case · FORCS" />
+      <div className="eyebrow">Case Study · 03</div>
+      <div className="h2 mt-12">FORCS — <span style={{color:"var(--muted)"}}>e-document SaaS, first PM role.</span></div>
+
+      <div className="row gap-48 mt-32" style={{alignItems:"stretch", flex:1, minHeight:0}}>
+        {/* LEFT: text content (Context + Work + Outcome stacked) */}
+        <div className="stack gap-20" style={{flex:"1 1 0", minWidth:0}}>
+          <div className="stack gap-8">
+            <div className="tag">Context</div>
+            <div className="body-lg">Military service substitute role at a Korean enterprise SaaS company. Owned feature priority during a PaaS-to-SaaS transition.</div>
+          </div>
+          <div className="rule"></div>
+          <div className="stack gap-8">
+            <div className="tag">The work</div>
+            <div className="body">Optimized signature pad sizing and approval workflows. Ran field interviews with bus drivers to surface UX barriers and turn them into PRDs.</div>
+            <div className="row gap-8 mt-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Feature Prioritization</span>
+              <span className="chip soft">UX Research</span>
+              <span className="chip soft">PaaS → SaaS</span>
+            </div>
+          </div>
+          <div className="rule" style={{marginTop:8}}></div>
+          <div className="stack gap-10" style={{marginTop:16}}>
+            <div className="tag">Outcome</div>
+            <div className="row gap-12" style={{alignItems:"stretch"}}>
+              <div className="metric-card" style={{flex:1}}><div className="v">RWS</div><div className="k">Won Resorts World Sentosa — Singapore's largest casino — as a contract</div></div>
+              <div className="metric-card" style={{flex:1}}><div className="v">50<span className="unit"> subs</span></div><div className="k">Enterprise subscriptions acquired in two months post-research</div></div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: 3 images stacked vertically */}
+        <div className="enter enter-scale stack gap-14" style={{flex:"1 1 0", minWidth:0, justifyContent:"center"}}>
+          <img src="img/forcs.png" alt="FORCS — logo"
+               style={{width:"100%", maxWidth:520, height:"auto", objectFit:"contain", borderRadius:10, boxShadow:"0 4px 16px rgba(1,33,105,0.12)", display:"block", alignSelf:"center"}} />
+          <img src="img/forcs2.png" alt="FORCS — product"
+               style={{width:"100%", maxWidth:520, height:"auto", borderRadius:10, boxShadow:"0 4px 16px rgba(1,33,105,0.12)", display:"block", alignSelf:"center"}} />
+          <img src="img/forcs3.png" alt="FORCS — product"
+               style={{width:"100%", maxWidth:520, height:"auto", borderRadius:10, boxShadow:"0 4px 16px rgba(1,33,105,0.12)", display:"block", alignSelf:"center"}} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 9 — Audible
+function PageAudible() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={6} label="Case · Audible" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Product planning</span>
+          <div className="h2">Audible <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Read &amp; Listen</span></div>
+          <div className="small mt-8" style={{color:"var(--muted)"}}>scroll-to-seek prototype</div>
+        </div>
+        <div className="links">
+          <span>Live demo</span>
+          <a href="https://audiblereadandlistenscrollmodify.vercel.app/player" target="_blank">audiblereadandlisten…vercel.app ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Product thesis</h4>
+            <p>Audiobook text should not be chained to the playhead. Readers want to browse ahead, jump back, and read-without-listening — the current UX doesn't let them.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>Interaction design</h4>
+            <ul>
+              <li>Locked (default) — text auto-scrolls with audio</li>
+              <li>First scroll surfaces a "scroll up to unlock" hint</li>
+              <li>Unlocked — text freezes, every word becomes tappable</li>
+              <li>Tap a word → playback seeks there, text re-locks</li>
+              <li>"Go back to 1:49" pill remembers the pre-seek position</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Precedents studied</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">YouTube Music · lyrics</span>
+              <span className="chip soft">Spotify · lyrics</span>
+              <span className="chip soft">Audible mobile app</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Music apps solved scroll-to-seek on lyrics years ago. Long-form reading deserves the same freedom — and the fix is interaction design, not a new model or backend.</p>
+          </div>
+        </div>
+        <div className="case-demo phone enter enter-scale">
+          <div className="demo-tag">Live demo · tap words to seek</div>
+          <div style={{width:340, height:"100%", maxHeight:680, borderRadius:24, background:"linear-gradient(160deg, #fff 0%, #f3f5fb 100%)", boxShadow:"0 8px 24px rgba(0,0,0,.4), inset 0 0 0 1px rgba(0,0,0,.06)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"42px 32px", textAlign:"center", gap:18}}>
+            <div style={{fontSize:11, fontFamily:"var(--mono)", letterSpacing:".18em", textTransform:"uppercase", color:"var(--navy)"}}>Read &amp; Listen</div>
+            <div style={{fontSize:34, fontWeight:600, lineHeight:1.15, color:"var(--ink)"}}>Tap any word.<br/>The audio seeks there.</div>
+            <div style={{fontSize:14, color:"var(--muted)", lineHeight:1.55, maxWidth:240}}>
+              Locked text auto-scrolls with the audiobook. Scroll up to unlock and the playhead pauses; tap a word to jump.
+            </div>
+            <div style={{marginTop:8, padding:"8px 14px", borderRadius:999, background:"var(--navy)", color:"#fff", fontSize:11, fontFamily:"var(--mono)", letterSpacing:".05em"}}>
+              audiblereadandlisten…vercel.app
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 10 — SHIS
+function PageShis() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={7} label="Case · SHIS" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Transformation · 2nd Place · Microsoft Buildathon</span>
+          <div className="h2">SHIS — <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Shift Handover</span> Intelligence System</div>
+        </div>
+        <div className="links">
+          <span>Live demo · GitHub</span>
+          <a href="https://joonselim.github.io/sea_tech_summit_microsoft_buildathon/" target="_blank">joonselim.github.io/sea_tech_summit… ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Transformation goal</h4>
+            <p>Replace an unreliable, paper-based shift-handover ritual with a structured, auditable, 2-minute workflow — standardized across operators, supervisors, and plant managers.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>Interventions</h4>
+            <ul>
+              <li>Structured capture UI in place of paper notebooks</li>
+              <li>Bridge the silo between machine alarms and operator tacit knowledge</li>
+              <li>Auto-generated standardized shift report</li>
+              <li>Digital sign-off — accountability across every shift</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stakeholders &amp; scope</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Plant operators</span>
+              <span className="chip soft">Shift supervisors</span>
+              <span className="chip soft">Plant manager</span>
+              <span className="chip soft">Time-to-context &lt; 2 min</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Manual handover is where production minutes disappear. Built as a POC for Microsoft Atlanta Buildathon's AI-workforce-transformation track — <b>won 2nd place</b>. The change is organizational, not just technological.</p>
+          </div>
+        </div>
+        <div className="case-demo enter enter-scale">
+          <div className="demo-tag">Screen recording</div>
+          <img src="gif/shis.gif" alt="SHIS dashboard in action" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 11 — Phone Agent
+function PagePhoneAgent() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={8} label="Case · Phone Agent" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Development</span>
+          <div className="h2">Phone Agent — <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>natural-language</span> Android control</div>
+        </div>
+        <div className="links">
+          <span>GitHub</span>
+          <a href="https://github.com/joonselim/phone-agent-try" target="_blank">github.com/joonselim/phone-agent-try ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Intent</h4>
+            <p>Control an Android phone entirely by typing natural-language commands — "order me KFC", "open Uber to my office". No taps required during execution.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>Architecture</h4>
+            <ul>
+              <li>Claude parses user intent and extracts parameters</li>
+              <li>Router dispatches to service handlers (Uber Eats, Amazon)</li>
+              <li>Droidrun + ADB drive the device without any user taps</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stack</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Claude API (Sonnet)</span>
+              <span className="chip soft">Droidrun SDK</span>
+              <span className="chip soft">ADB</span>
+              <span className="chip soft">Python 3.12</span>
+              <span className="chip soft">uv</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Hands-free device control is where LLMs actually pay off — describe what you want, the agent operates the app. A US-adapted fork of DDalkkak (Korean original), rebuilt around US services.</p>
+          </div>
+        </div>
+        <div className="case-demo enter enter-scale">
+          <div className="demo-tag">Screen recording</div>
+          <img src="gif/phone_agent.gif" alt="Phone Agent in action" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 9 — Daisy / NYC Building Health Analysis
+function PageDaisy() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={9} label="Case · NYC Building Health" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Data product · Growth intel</span>
+          <div className="h2">Daisy <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Prospect Intelligence</span></div>
+          <div className="small mt-8" style={{color:"var(--muted)"}}>NYC building health score · 19,170 buildings · 28 hot prospects</div>
+        </div>
+        <div className="links">
+          <span>Interactive map</span>
+          <a href="https://joonselim.github.io/nyc-building-health-analysis/daisy_prospect_map.html" target="_blank">joonselim.github.io/…/daisy_prospect_map ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col" style={{gridTemplateColumns:"0.8fr 1.7fr"}}>
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Hypothesis</h4>
+            <p>Unresolved NYC HPD violations are a leading indicator of bad property management — boards are <b>already frustrated</b> with their manager <i>before</i> they shop for a replacement.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>What I built</h4>
+            <ul>
+              <li>Ingested 81K open HPD violations across 19K buildings</li>
+              <li>Weighted composite health score, 0–100, from 5 signals</li>
+              <li>Interactive prospect map with clusters &amp; tier coloring</li>
+              <li>Shortlist of <b>28</b> "poorly managed" buildings to call this week</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stack</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Python · pandas</span>
+              <span className="chip soft">NYC HPD open data</span>
+              <span className="chip soft">Folium · Leaflet</span>
+              <span className="chip soft">Kaggle</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Sales teams cold-call. Daisy could walk into a board meeting with a quantified pitch — "your building scores 24/100, here's why." Built end-to-end from public NYC data, no internal access required.</p>
+          </div>
+        </div>
+        <div className="case-demo enter enter-scale" style={{background:"#fff"}}>
+          <div className="demo-tag">Interactive map preview</div>
+          <img src="screenshot/screenshot.png"
+               alt="NYC Building Health Analysis — map preview"
+               style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} />
+          <div style={{position:"absolute", left:0, right:0, bottom:0, padding:"12px 16px", background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%)", color:"#fff", fontSize:14, letterSpacing:".02em", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+            <span>Live at <span style={{fontFamily:"var(--mono)",fontSize:13}}>joonselim.github.io/nyc-building-health-analysis/daisy_prospect_map.html</span></span>
+            <span style={{opacity:.8}}>↗</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 10 — gym-mupen64plus (Mario RL)
+function PageMario() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={10} label="Case · gym-mupen64plus" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Open-source · Reinforcement Learning</span>
+          <div className="h2">AI Agent creation with <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Reinforcement Learning</span></div>
+          <div className="small mt-8" style={{color:"var(--muted)"}}>Contributor to <b>icepeng/gym-mupen64plus</b> — OpenAI Gym wrapper for the Mupen64Plus N64 emulator</div>
+        </div>
+        <div className="links">
+          <span>GitHub</span>
+          <a href="https://github.com/icepeng/gym-mupen64plus" target="_blank">github.com/icepeng/gym-mupen64plus ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col">
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>The project</h4>
+            <p>An OpenAI Gym wrapper around the Mupen64Plus N64 emulator — exposes classic games (Super Mario 64, Mario Kart) as RL environments. Reset states, observation buffers, action spaces, reward hooks: packaged so any RL framework can plug straight in and start training agents.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>My contribution</h4>
+            <p>Contributor to the codebase. Worked on environment scaffolding and game-specific tooling for the Mario titles. <b>My name shows up in screenshots #1 and #3</b> in the bottom-right thumbnails.</p>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stack</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Python</span>
+              <span className="chip soft">OpenAI Gym</span>
+              <span className="chip soft">Mupen64Plus</span>
+              <span className="chip soft">N64 emulation</span>
+              <span className="chip soft">Reinforcement Learning</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Modern RL benchmarks rarely touch retro consoles. Bridging an N64 emulator to a Gym interface unlocks 30 years of game design as RL training data — a small but real contribution to making old games legible to modern agents.</p>
+          </div>
+          <div className="enter enter-5" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginTop:8}}>
+            <img src="img/mario2.png" alt="gym-mupen64plus screenshot (#2)"
+                 style={{width:"100%",borderRadius:8,boxShadow:"0 4px 14px rgba(1,33,105,0.14)",display:"block"}} />
+            <img src="img/mario3.png" alt="gym-mupen64plus — name credit (#3)"
+                 style={{width:"100%",borderRadius:8,boxShadow:"0 4px 14px rgba(1,33,105,0.14)",display:"block"}} />
+          </div>
+        </div>
+        <div className="enter enter-scale" style={{display:"flex",flexDirection:"column",minHeight:0}}>
+          <img src="img/mario1.png" alt="gym-mupen64plus — contributor list (#1)"
+               style={{width:"100%",height:"100%",objectFit:"contain",borderRadius:12,boxShadow:"0 12px 40px rgba(1,33,105,0.18)",background:"#fff",display:"block"}} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 11 — Things I've shipped + Skills (merged)
+function PageProjects() {
+  const projects = [
+    { t:"Android Phone Agent", d:"A phone agent that executes natural-language commands on Android end-to-end via the Claude API — no user input during navigation.", tags:["Claude API","Agent","Mobile"] },
+    { t:"Pension AI Recommender", d:"Integrated an AI recommendation engine into a 17.9M-user bank product; tuned model parameters from behavior analysis, drove 13% YoY asset growth.", tags:["ML","Fintech","A/B"] },
+    { t:"$130M Refund Workflow", d:"SQL-based refund engine with automated clawback logic; resolved $130M in crisis transactions at 100% regulatory compliance.", tags:["SQL","Ops","Compliance"] },
+    { t:"Oriental Medicine Diagnostic", d:"AI-assisted diagnostic tool — cut intake questions from 58 to 15 while maintaining 95% accuracy. Productized into web + mobile.", tags:["Healthtech","ML","0→1"] },
+    { t:"joonse.kr", d:"Personal site and writing, hand-built. A place to put thoughts that don't fit in a résumé bullet.", tags:["Personal","Writing"] },
+  ];
+  const awards = [
+    ["2026","2nd Place · SEA MBA Tech Summit AI Buildathon","Microsoft Atlanta"],
+    ["2024","Merit-based Scholarship (80%) · Duke Fuqua",""],
+    ["2023","1st Place · Climb TCBC Regional · Red Level",""],
+    ["2021","ICPC International Qualifier · Top 4 nationally","Korea National Team"],
+    ["2019","Bronze · Nexon Game Design Competition",""],
+  ];
+  const skillCols = [
+    { h:"Product", items:[
+        ["Prioritization",5],["Roadmap Planning",5],["OKRs",5],
+        ["PRD Writing",5],["Stakeholder Mgmt",5],["UAT",5],
+        ["UX Review",4],["A/B Testing",4],["Product Strategy",4],["Product Discovery",4],
+    ]},
+    { h:"Engineering", items:[
+        ["SQL",5],["Python",4],["pandas",5],["React",4],["AWS",2],
+        ["C",5],["Node",3],["NoSQL",4],["ML / LLM",4],["System Design",3],
+    ]},
+    { h:"Analytics", items:[
+        ["Tableau",4],["Power BI",4],["Advanced Excel",5],["SQL Analytics",5],
+        ["Mixpanel",3],["Crystal Ball",4],["Decision Tree",4],
+    ]},
+    { h:"Others", items:[
+        ["Figma",3],["Adobe XD",4],["Adobe AE",3],["Adobe Pr",3],
+        ["Korean",5],["English",4],["Chinese",1],["Negotiation",3],
+    ]},
+  ];
+  const dots = (n) => <span className="dots">{[1,2,3,4,5].map(i=><i key={i} className={i<=n?"on":""}></i>)}</span>;
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={11} label="Things I've shipped & Skills" />
+      <div className="row between" style={{alignItems:"flex-end"}}>
+        <div>
+          <div className="eyebrow">Selected work + capabilities</div>
+          <div className="h1 mt-12">Things I've shipped <span style={{fontFamily:"var(--pf-serif)",fontStyle:"italic",color:"var(--navy)",fontWeight:400}}>&amp; skills.</span></div>
+        </div>
+        <div className="mono small muted">05 projects · 05 awards · 35 skills</div>
+      </div>
+
+      <div className="row gap-48 mt-24" style={{alignItems:"stretch", flex:1, minHeight:0}}>
+        {/* LEFT — Projects + Awards */}
+        <div className="stack gap-14" style={{flex:"0.85 1 0", minWidth:0}}>
+          <div className="tag">Projects</div>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(2, 1fr)", gap:8}}>
+            {projects.map((p,i)=>(
+              <div className="proj enter enter-scale" key={i} style={{padding:"9px 12px", animationDelay:`${.04*i}s`,gap:4}}>
+                <div className="idx" style={{top:8,right:10,fontSize:9}}>{String(i+1).padStart(2,'0')}</div>
+                <h4 style={{fontSize:12,marginTop:0,paddingRight:20,lineHeight:1.2}}>{p.t}</h4>
+                <div className="desc" style={{fontSize:10,marginTop:2,lineHeight:1.35,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden",flex:"none"}}>{p.d}</div>
+                <div className="tags" style={{marginTop:3,gap:4}}>{p.tags.map(t=><span key={t} style={{fontSize:9,padding:"2px 5px"}}>{t}</span>)}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="rule" style={{marginTop:24}}></div>
+          <div className="tag" style={{marginTop:14}}>Awards</div>
+          <div className="stack" style={{gap:0,marginTop:6}}>
+            {awards.map(([y,t,s],i)=>(
+              <div key={i} className="enter enter-scale" style={{padding:"6px 0",borderTop: i===0 ? "none":"1px solid var(--rule)",animationDelay:`${.03*i}s`,display:"grid",gridTemplateColumns:"56px 1fr",gap:14,alignItems:"baseline"}}>
+                <div className="mono" style={{fontSize:10.5,color:"var(--navy)",letterSpacing:".06em"}}>{y}</div>
+                <div>
+                  <div style={{fontSize:12.5,fontWeight:600,color:"var(--ink)",lineHeight:1.3}}>{t}</div>
+                  {s && <div style={{fontSize:10.5,color:"var(--muted)",marginTop:1}}>{s}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="vrule"></div>
+
+        {/* RIGHT — Skills (2x2 sub-grid of 4 columns) */}
+        <div className="stack gap-10" style={{flex:"1.15 1 0", minWidth:0, paddingLeft:32}}>
+          <div className="tag">Skills · self-rated</div>
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"14px 32px", flex:1, minHeight:0}}>
+            {skillCols.map((c)=>(
+              <div className="skill-col" key={c.h} style={{gap:6}}>
+                <h4 style={{fontSize:11}}>{c.h}</h4>
+                <ul style={{gap:4}}>{c.items.map(([name,n])=>(
+                  <li key={name} style={{fontSize:11.5,padding:"1px 0"}}><span>{name}</span>{dots(n)}</li>
+                ))}</ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// (Skills page was merged into the Projects page — "Things I've shipped + Skills".)
+// (Awards & Fun page was also merged into the Projects page.)
+
+// Page 12 — Contact
+function PageContact() {
+  return (
+    <div>
+      <PageMark n={12} label="Contact" />
+      <div className="row between" style={{alignItems:"flex-start",height:"100%"}}>
+        <div className="stack" style={{justifyContent:"space-between",height:"100%",flex:"1 1 0",paddingRight:48}}>
+          <div>
+            <div className="eyebrow enter enter-1">Reach out</div>
+            <div className="display mt-16 enter enter-2" style={{fontSize:128}}>
+              Let's<br/><span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>talk<span className="name-dot">!</span></span>
+            </div>
+          </div>
+          <div className="body-lg enter enter-4" style={{maxWidth:560,color:"var(--muted)"}}>
+            Even a quick call is more than welcome. I'm most interested in product roles in fintech, AI infrastructure, or 0→1 at venture-stage startups. Full-time Summer 2026 and beyond.
+          </div>
+        </div>
+        <div className="stack" style={{flex:"1 1 0",paddingTop:40}}>
+          <div className="stack">
+            <div className="contact-row"><div className="k">Email</div><div className="v"><a href="mailto:joonselim@gmail.com">joonselim@gmail.com</a></div></div>
+            <div className="contact-row"><div className="k">Web</div><div className="v"><a href="https://joonse.kr" target="_blank" rel="noreferrer">joonse.kr</a></div></div>
+            <div className="contact-row"><div className="k">Phone</div><div className="v">(213) 278-9295</div></div>
+            <div className="contact-row"><div className="k">Resume</div><div className="v"><a href="img/Joonse Lim_Resume.pdf" download="Joonse Lim_Resume.pdf">Download my resume ↓</a></div></div>
+            <div className="contact-row"><div className="k">Based</div><div className="v">Durham, NC · open to relocation</div></div>
+            <div className="contact-row"><div className="k">Status</div><div className="v">US Permanent Resident</div></div>
+            <div className="contact-row"><div className="k">Currently</div><div className="v">Duke MBA '27 · seeking Summer '26 internship</div></div>
+          </div>
+          <div className="rule" style={{marginTop:48}}></div>
+          <div className="enter enter-5" style={{marginTop:24}}>
+            <div className="tag" style={{marginBottom:10}}>Off-keyboard</div>
+            <div className="body" style={{color:"var(--ink-2)",fontSize:15,lineHeight:1.6}}>
+              I love climbing. If you climb too — let's talk about it.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, {
+  PageAbout,
+  PageShinhan, PageStartup, PageForcs,
+  PageAudible, PageShis, PagePhoneAgent, PageDaisy, PageMario,
+  PageProjects, PageContact,
+});
+  </script>
+
+  <!-- ─── app.jsx ─────────────────────────────────────────────────── -->
+  <script type="text/babel">
+// app.jsx — main app shell, keyboard nav, timeline, tweaks
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "primaryFont": "sans",
+  "transition": "fade"
+}/*EDITMODE-END*/;
+
+const PAGES = [
+  { key:"chat",    label:"Title",      Cmp: () => <Chatbot /> },
+  { key:"about",   label:"About",      Cmp: PageAbout },
+  { key:"shinhan", label:"Shinhan",    Cmp: PageShinhan },
+  { key:"startup", label:"Founder",    Cmp: PageStartup },
+  { key:"forcs",   label:"FORCS",      Cmp: PageForcs },
+  { key:"audible", label:"Audible",    Cmp: PageAudible },
+  { key:"shis",    label:"SHIS",       Cmp: PageShis },
+  { key:"phone",   label:"Phone Agent",Cmp: PagePhoneAgent },
+  { key:"daisy",   label:"Daisy NYC",  Cmp: PageDaisy },
+  { key:"mario",   label:"Mario RL",   Cmp: PageMario },
+  { key:"proj",    label:"Shipped+Skills", Cmp: PageProjects },
+  { key:"contact", label:"Contact",    Cmp: PageContact },
+];
+
+// PRINT MODE — render every slide stacked, top to bottom, at design size.
+// No transform scaling, no chrome (timeline/kbd-hint/tweaks). Use the
+// browser's "Save as PDF" with Margins=None and Background=ON to export.
+function App() {
+  return (
+    <>
+      {PAGES.map((p,i) => (
+        <div key={p.key} className="page print-page" data-screen-label={`${String(i+1).padStart(2,'0')} ${p.label}`}>
+          <p.Cmp />
+        </div>
+      ))}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
