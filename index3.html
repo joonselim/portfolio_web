@@ -998,6 +998,30 @@
       opacity: 1 !important;
     }
 
+    /* Kill all drop-shadows/halos that look like blue-gray padding when
+       printed (especially .case-demo's navy halo and metric-card depth). */
+    .print-page .case-demo,
+    .print-page .case-demo.phone,
+    .print-page .metric-card,
+    .print-page .proj,
+    .print-page .edu-card,
+    .print-page .avatar-ph,
+    .print-page img,
+    .print-page .border-trace { box-shadow: none !important; }
+
+    /* Make case-demo a flat container that matches the page background:
+       no rounded halo, no dark fill, just hold the screenshot full-bleed
+       within its column. Border keeps it visually separated. */
+    .print-page .case-demo {
+      background: #fff !important;
+      border: 1px solid var(--rule);
+      border-radius: 8px !important;
+    }
+    .print-page .case-demo.phone {
+      background: #f3f5fb !important;
+      border: 1px solid var(--rule);
+    }
+
     @page {
       size: 1600px 900px;
       margin: 0;
