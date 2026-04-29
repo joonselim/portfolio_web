@@ -262,6 +262,35 @@
       font-size: 11px;
     }
 
+    /* First-page glow — make the arrow keys beat softly so visitors notice
+       they can use ← → to navigate. Only applied while on idx 0. */
+    .kbd-hint--first {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .kbd-hint--first .kbd {
+      border-color: var(--navy);
+      color: var(--navy);
+      animation: kbdGlow 1.6s ease-in-out infinite;
+    }
+    .kbd-hint--first .kbd:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+    @keyframes kbdGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(1, 33, 105, 0.0),
+                    0 1px 0 var(--rule);
+        transform: translateY(0);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(1, 33, 105, 0.18),
+                    0 0 14px 2px rgba(1, 33, 105, 0.35),
+                    0 1px 0 var(--rule);
+        transform: translateY(-1px);
+      }
+    }
+
     /* ─── Reusable Components ────────────────────────────────────── */
     .rule  { height: 1px; background: var(--rule); width: 100%; }
     .vrule { width: 1px;  background: var(--rule); align-self: stretch; }
@@ -2282,12 +2311,10 @@ function App() {
         ))}
       </div>
 
-      {/* Keyboard hint */}
-      {idx !== 0 && (
-        <div className="kbd-hint">
-          <span className="kbd">←</span><span className="kbd">→</span><span>navigate</span>
-        </div>
-      )}
+      {/* Keyboard hint — glows on the very first page so visitors notice */}
+      <div className={`kbd-hint${idx === 0 ? " kbd-hint--first" : ""}`}>
+        <span className="kbd">←</span><span className="kbd">→</span><span>navigate</span>
+      </div>
 
       <TweaksPanel>
         <TweakSection label="Typography" />
