@@ -1022,6 +1022,42 @@
       border: 1px solid var(--rule);
     }
 
+    /* Chatbot page (index3): the chat panel is a snapshot for print, not
+       interactive. Hide the empty input form and the suggestion buttons
+       so the panel reads as "AI assistant" rather than "abandoned form". */
+    .print-page .chat-input,
+    .print-page .sugs,
+    .print-page .twk-toggle {
+      display: none !important;
+    }
+    /* The animated dashed border around the chat panel renders as a tiny
+       partial line in print. Replace it with a calm solid border. */
+    .print-page .chat-panel {
+      border: 1px solid var(--rule) !important;
+      box-shadow: none !important;
+    }
+    .print-page .chat-panel .border-trace { display: none !important; }
+
+    /* Calorie Bear: phone screenshots have heavy inline box-shadow plus an
+       inset white "border". Both translate as gray rings in print. The
+       generic .print-page img rule handles box-shadow; this one also
+       drops the inline border-radius hint without losing rounded corners. */
+    .print-page .case-two-col img[src*="calorie_bear"] {
+      box-shadow: 0 0 0 1px var(--rule) !important;
+      border-radius: 18px !important;
+    }
+    /* The app-icon thumbnail in the Calorie Bear case-head: keep it
+       crisp, drop the navy halo, give it a soft outline instead. */
+    .print-page .case-head img[src*="appicon"] {
+      box-shadow: 0 0 0 1px var(--rule) !important;
+    }
+
+    /* Mario thumbnails on the left column should not float as a separate
+       layer; flatten the inline shadow without removing the visual frame. */
+    .print-page img[src*="/mario"] {
+      box-shadow: 0 0 0 1px var(--rule) !important;
+    }
+
     @page {
       size: 1600px 900px;
       margin: 0;
