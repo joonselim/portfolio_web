@@ -1565,7 +1565,7 @@ function Chatbot() {
   return (
     <>
     <div className="page-mark"><span className="dot"></span>Title</div>
-    <div className="page-num">01 / 12</div>
+    <div className="page-num">01 / 13</div>
     <div className="chat-wrap">
       <div className="chat-left">
         <div>
@@ -1676,7 +1676,7 @@ function PageMark({n, label}) {
   return (
     <>
       <div className="page-mark"><span className="dot"></span>{label}</div>
-      <div className="page-num">{String(n).padStart(2,'0')} / 12</div>
+      <div className="page-num">{String(n).padStart(2,'0')} / 13</div>
     </>
   );
 }
@@ -2213,7 +2213,72 @@ function PageMario() {
   );
 }
 
-// Page 11 — Things I've shipped + Skills (merged)
+// Page 11 — Calorie Bear (live on the App Store)
+function PageCalorieBear() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={11} label="Case · Calorie Bear" />
+      <div className="case-head enter enter-1">
+        <div className="row" style={{alignItems:"center",gap:18}}>
+          <img src="img/calorie_bear/appicon.png" alt="Calorie Bear icon"
+               style={{width:64,height:64,borderRadius:14,boxShadow:"0 4px 14px rgba(1,33,105,0.16)",display:"block",flexShrink:0}} />
+          <div>
+            <span className="cat">iOS · Mobile · Live on the App Store</span>
+            <div className="h2">Calorie <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Bear</span></div>
+            <div className="small mt-8" style={{color:"var(--muted)"}}>A bear-themed daily calorie tracker · shipped to the App Store</div>
+          </div>
+        </div>
+        <div className="links">
+          <span>App Store · GitHub</span>
+          <a href="https://apps.apple.com/us/app/calorie-bear/id6763927503" target="_blank" rel="noreferrer">apps.apple.com/…/calorie-bear ↗</a>
+          <a href="https://github.com/joonselim/food_diet_log" target="_blank" rel="noreferrer">github.com/joonselim/food_diet_log ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col" style={{gridTemplateColumns:"1fr 1.2fr"}}>
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Product thesis</h4>
+            <p>Calorie counting apps feel clinical. I wanted a daily tracker that's warm, glanceable, and a little bit playful — a bear that reacts to how full you are, instead of a progress bar that just shames you.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>What I shipped</h4>
+            <ul>
+              <li>Daily intake screen with a bear that changes expression as the day fills up</li>
+              <li>Quick food entry — search, recent items, custom foods with calories &amp; macros</li>
+              <li>Local-first storage; data stays on the device, no account required</li>
+              <li>Submitted, reviewed, and approved on the iOS App Store</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stack</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Swift</span>
+              <span className="chip soft">SwiftUI</span>
+              <span className="chip soft">iOS 17+</span>
+              <span className="chip soft">SwiftData</span>
+              <span className="chip soft">App Store Connect</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>I wanted to ship something end-to-end on the actual App Store — Xcode, signing, review, the whole pipeline — not just a side project living on GitHub. Calorie Bear is small, but it's real, and reviewers can install it.</p>
+          </div>
+        </div>
+
+        <div className="enter enter-scale" style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:16,alignItems:"center",justifyItems:"center",minHeight:0}}>
+          <img src="img/calorie_bear/Main_Ate_Food.png" alt="Calorie Bear — daily intake"
+               style={{width:"100%",maxWidth:240,borderRadius:24,boxShadow:"0 12px 40px rgba(1,33,105,0.22), inset 0 0 0 1px rgba(255,255,255,0.6)",display:"block"}} />
+          <img src="img/calorie_bear/Food_Add.png" alt="Calorie Bear — add food"
+               style={{width:"100%",maxWidth:240,borderRadius:24,boxShadow:"0 12px 40px rgba(1,33,105,0.22), inset 0 0 0 1px rgba(255,255,255,0.6)",display:"block"}} />
+          <img src="img/calorie_bear/Main_Too_Full.png" alt="Calorie Bear — too full state"
+               style={{width:"100%",maxWidth:240,borderRadius:24,boxShadow:"0 12px 40px rgba(1,33,105,0.22), inset 0 0 0 1px rgba(255,255,255,0.6)",display:"block"}} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Page 12 — Things I've shipped + Skills (merged)
 function PageProjects() {
   const projects = [
     { t:"Android Phone Agent", d:"A phone agent that executes natural-language commands on Android end-to-end via the Claude API — no user input during navigation.", tags:["Claude API","Agent","Mobile"] },
@@ -2252,7 +2317,7 @@ function PageProjects() {
 
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
-      <PageMark n={11} label="Things I've shipped & Skills" />
+      <PageMark n={12} label="Things I've shipped & Skills" />
       <div className="row between" style={{alignItems:"flex-end"}}>
         <div>
           <div className="eyebrow">Selected work + capabilities</div>
@@ -2319,7 +2384,7 @@ function PageProjects() {
 function PageContact() {
   return (
     <div>
-      <PageMark n={12} label="Contact" />
+      <PageMark n={13} label="Contact" />
       <div className="row between" style={{alignItems:"flex-start",height:"100%"}}>
         <div className="stack" style={{justifyContent:"space-between",height:"100%",flex:"1 1 0",paddingRight:48}}>
           <div>
@@ -2358,7 +2423,7 @@ function PageContact() {
 Object.assign(window, {
   PageAbout,
   PageShinhan, PageStartup, PageForcs,
-  PageAudible, PageShis, PagePhoneAgent, PageDaisy, PageMario,
+  PageAudible, PageShis, PagePhoneAgent, PageDaisy, PageMario, PageCalorieBear,
   PageProjects, PageContact,
 });
   </script>
@@ -2383,6 +2448,7 @@ const PAGES = [
   { key:"phone",   label:"Phone Agent",Cmp: PagePhoneAgent },
   { key:"daisy",   label:"Daisy NYC",  Cmp: PageDaisy },
   { key:"mario",   label:"Mario RL",   Cmp: PageMario },
+  { key:"calorie", label:"Calorie Bear", Cmp: PageCalorieBear },
   { key:"proj",    label:"Shipped+Skills", Cmp: PageProjects },
   { key:"contact", label:"Contact",    Cmp: PageContact },
 ];
