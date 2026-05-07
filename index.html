@@ -1506,7 +1506,7 @@ function Chatbot() {
   return (
     <>
     <div className="page-mark"><span className="dot"></span>Title</div>
-    <div className="page-num">01 / 13</div>
+    <div className="page-num">01 / 14</div>
     <div className="chat-wrap">
       <div className="chat-left">
         <div>
@@ -1617,7 +1617,7 @@ function PageMark({n, label}) {
   return (
     <>
       <div className="page-mark"><span className="dot"></span>{label}</div>
-      <div className="page-num">{String(n).padStart(2,'0')} / 13</div>
+      <div className="page-num">{String(n).padStart(2,'0')} / 14</div>
     </>
   );
 }
@@ -1873,12 +1873,12 @@ function PageForcs() {
 function PageAudible() {
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
-      <PageMark n={8} label="Case · Audible" />
+      <PageMark n={8} label="Case · Audible 1/2" />
       <div className="case-head enter enter-1">
         <div>
-          <span className="cat">Product planning</span>
+          <span className="cat">Audible · concept 1/2 · Product planning</span>
           <div className="h2">Audible <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Read &amp; Listen</span></div>
-          <div className="small mt-8" style={{color:"var(--muted)"}}>scroll-to-seek prototype</div>
+          <div className="small mt-8" style={{color:"var(--muted)"}}>scroll-to-seek prototype · pure interaction fix</div>
         </div>
         <div className="links">
           <span>Live demo</span>
@@ -1928,11 +1928,72 @@ function PageAudible() {
   );
 }
 
+// Page 9 — Audible Clip (concept 2/2)
+function PageAudibleClip() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <PageMark n={9} label="Case · Audible 2/2" />
+      <div className="case-head enter enter-1">
+        <div>
+          <span className="cat">Audible · concept 2/2 · Product + ML pipeline</span>
+          <div className="h2">Audible <span style={{color:"var(--navy)",fontFamily:"var(--pf-serif)",fontStyle:"italic",fontWeight:400}}>Clip</span></div>
+          <div className="small mt-8" style={{color:"var(--muted)"}}>Tap to clip. The audiobook snaps to the sentence you just heard.</div>
+        </div>
+        <div className="links">
+          <span>Pitch deck · Live demo · GitHub</span>
+          <a href="https://audible-clip-deck.vercel.app/" target="_blank" rel="noreferrer">audible-clip-deck.vercel.app ↗</a>
+          <a href="https://audibleclipeditmodifty.vercel.app/player" target="_blank" rel="noreferrer">audibleclipeditmodifty…/player ↗</a>
+        </div>
+      </div>
+      <div className="case-two-col" style={{gridTemplateColumns:"0.85fr 1.5fr"}}>
+        <div className="case-info">
+          <div className="block enter enter-2">
+            <h4>Product thesis</h4>
+            <p>Text books have underlining. Audio doesn't. Audible Clip is a one-tap clip that snaps to the nearest sentence boundary, so listeners can save the line they just heard without scrubbing the timeline.</p>
+          </div>
+          <div className="block enter enter-3">
+            <h4>How it snaps</h4>
+            <ul>
+              <li>STT pipeline (faster-whisper large-v3) gives word-level timestamps</li>
+              <li>spaCy segments the text into sentences</li>
+              <li>Silence ≥ 1.5s marks paragraph breaks</li>
+              <li>Tap finds the nearest sentence boundary and clips from there</li>
+            </ul>
+          </div>
+          <div className="block enter enter-4">
+            <h4>Stack</h4>
+            <div className="row gap-8" style={{flexWrap:"wrap"}}>
+              <span className="chip soft">Next.js · Tailwind</span>
+              <span className="chip soft">faster-whisper</span>
+              <span className="chip soft">spaCy</span>
+              <span className="chip soft">JSON.gz · word/sentence/paragraph</span>
+              <span className="chip soft">Vercel</span>
+            </div>
+          </div>
+          <div className="block enter enter-5">
+            <h4>Why</h4>
+            <p>Concept 1/2 (Read &amp; Listen) was a pure interaction fix, no model needed. Audible Clip needed a real ML pipeline behind it: STT plus sentence segmentation processed offline (RTF 1.22× on Mac CPU), shipped through a Next.js mobile UI, and packaged in its own pitch deck. Same product surface, harder problem.</p>
+          </div>
+        </div>
+        <div className="case-demo enter enter-scale" style={{background:"#fff"}}>
+          <div className="demo-tag">Live · pitch deck (snap animation on slides 5–6)</div>
+          <iframe
+            src="https://audible-clip-deck.vercel.app/"
+            title="Audible Clip pitch deck"
+            loading="lazy"
+            style={{width:"100%",height:"100%",border:0,display:"block"}}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Page 10 — SHIS
 function PageShis() {
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
-      <PageMark n={9} label="Case · SHIS" />
+      <PageMark n={10} label="Case · SHIS" />
       <div className="case-head enter enter-1">
         <div>
           <span className="cat">Transformation · 2nd Place · Microsoft Buildathon</span>
@@ -1985,7 +2046,7 @@ function PageShis() {
 function PagePhoneAgent() {
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
-      <PageMark n={10} label="Case · Phone Agent" />
+      <PageMark n={11} label="Case · Phone Agent" />
       <div className="case-head enter enter-1">
         <div>
           <span className="cat">Development</span>
@@ -2038,7 +2099,7 @@ function PagePhoneAgent() {
 function PageDaisy() {
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
-      <PageMark n={11} label="Case · NYC Building Health" />
+      <PageMark n={12} label="Case · NYC Building Health" />
       <div className="case-head enter enter-1">
         <div>
           <span className="cat">Data product · Growth intel</span>
@@ -2255,7 +2316,7 @@ function PageProjects() {
 
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
-      <PageMark n={12} label="Things I've shipped & Skills" />
+      <PageMark n={13} label="Things I've shipped & Skills" />
       <div className="row between" style={{alignItems:"flex-end"}}>
         <div>
           <div className="eyebrow">Selected work + capabilities</div>
@@ -2322,7 +2383,7 @@ function PageProjects() {
 function PageContact() {
   return (
     <div>
-      <PageMark n={13} label="Contact" />
+      <PageMark n={14} label="Contact" />
       <div className="row between" style={{alignItems:"flex-start",height:"100%"}}>
         <div className="stack" style={{justifyContent:"space-between",height:"100%",flex:"1 1 0",paddingRight:48}}>
           <div>
@@ -2362,7 +2423,7 @@ function PageContact() {
 Object.assign(window, {
   PageAbout,
   PageShinhan, PageStartup, PageForcs,
-  PageAudible, PageShis, PagePhoneAgent, PageDaisy, PageMario, PageCalorieBear,
+  PageAudible, PageAudibleClip, PageShis, PagePhoneAgent, PageDaisy, PageMario, PageCalorieBear,
   PageProjects, PageContact,
 });
   </script>
@@ -2384,7 +2445,8 @@ const PAGES = [
   { key:"forcs",   label:"FORCS",      Cmp: PageForcs },
   { key:"calorie", label:"Calorie Bear", Cmp: PageCalorieBear },
   { key:"mario",   label:"Mario RL",   Cmp: PageMario },
-  { key:"audible", label:"Audible",    Cmp: PageAudible },
+  { key:"audible", label:"Audible 1/2", Cmp: PageAudible },
+  { key:"audible_clip", label:"Audible 2/2", Cmp: PageAudibleClip },
   { key:"shis",    label:"SHIS",       Cmp: PageShis },
   { key:"phone",   label:"Phone Agent",Cmp: PagePhoneAgent },
   { key:"daisy",   label:"Daisy NYC",  Cmp: PageDaisy },
