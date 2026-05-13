@@ -1023,12 +1023,21 @@
     }
 
     /* Chatbot page (index3): the chat panel is a snapshot for print, not
-       interactive. Hide the empty input form and the suggestion buttons
-       so the panel reads as "AI assistant" rather than "abandoned form". */
+       interactive. Hide the empty input form (it reads as "abandoned form"
+       in print) but KEEP the suggestion chips visible — they tell the
+       reader what kinds of questions the live chatbot can answer. */
     .print-page .chat-input,
-    .print-page .sugs,
     .print-page .twk-toggle {
       display: none !important;
+    }
+    /* Suggestion buttons: render as informational chips in print (no
+       disabled-button styling, no opacity dimming). */
+    .print-page .sugs .sug,
+    .print-page .sugs button[disabled] {
+      opacity: 1 !important;
+      cursor: default !important;
+      color: var(--ink) !important;
+      background: var(--paper-2, #f3eedf) !important;
     }
     /* The animated dashed border around the chat panel renders as a tiny
        partial line in print. Replace it with a calm solid border. */
