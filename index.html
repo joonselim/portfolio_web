@@ -2577,5 +2577,11 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
+
+  <!-- Vercel Web Analytics — visits, countries, cities, pages, referrers.
+       Loads only on the Vercel deployment; the /_vercel/insights endpoint
+       doesn't exist on localhost or GitHub Pages, so it just no-ops there.
+       Enable "Web Analytics" once in the Vercel project settings. -->
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
