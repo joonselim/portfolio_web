@@ -1528,8 +1528,7 @@ About Joonse Lim:
 - US Permanent Resident. Email joonselim@gmail.com. Phone (213) 278-9295. Personal site joonse.kr.
 
 Experience:
-- Shinhan Bank, Seoul (Jan 2024–Apr 2025) — Product Manager, Investment Service. Led product initiatives across a 17.9M-user financial platform, improved stability 8%, shifted 40% of engineering capacity to mobile, aligned 20+ teams on an API migration replacing an inflated vendor quote with a resource-based rate, cut fund launch cost 50%.
-- Shinhan Bank (Aug 2021–Jan 2024) — Software Developer, Financial Service. Drove 13% YoY pension assets increase by integrating an AI recommendation engine. Engineered a SQL-based refund workflow resolving $130M in crisis transactions with 100% regulatory compliance. Cut data processing time 40%.
+- Shinhan Bank, Seoul (Aug 2021 to Apr 2025) — Software Developer, Financial Service then Investment Service. Engineered a SQL-based refund workflow resolving $130M in court-mandated Lime Fund refunds with 100% regulatory compliance. Drove 13% YoY pension assets growth by integrating an AI recommendation engine. Cut foreign-fund pricing latency 40% by swapping Bloomberg's overseas feed with a Korea-hosted market data source. Built backends for mobile-first fund products reaching 10M+ MAUs.
 - Korean Medicine AI Startup, self-founded (Sep 2020–Jul 2021). Founder / Product Owner. AI diagnostic tool reducing patient questions from 58 to 15 (70% reduction) with 95% accuracy. Secured a $50K government grant. Signed MOUs with two hospitals.
 - FORCS, Seoul (Jun 2017–Sep 2019) — Product Manager, e-document SaaS, military service substitute. Led PaaS-to-SaaS transition that won Resorts World Sentosa (Singapore's largest casino). Field-interviewed bus drivers into product requirements; 50 enterprise subs in two months.
 
@@ -1732,7 +1731,7 @@ function PageMark({n, label}) {
 // Page 2 — About + Education + Experience (merged)
 function PageAbout() {
   const rows = [
-    { yr:"2024 — 2025", co:"Shinhan Bank", ro:"Product Manager, Investment Service", loc:"Seoul" },
+    { yr:"2024 — 2025", co:"Shinhan Bank", ro:"Software Developer, Investment Service", loc:"Seoul" },
     { yr:"2021 — 2024", co:"Shinhan Bank", ro:"Software Developer, Financial Service", loc:"Seoul" },
     { yr:"2020 — 2021", co:"Korean Medicine AI (self-founded)", ro:"Founder, Product Owner", loc:"Gwangju" },
     { yr:"2017 — 2019", co:"FORCS", ro:"Product Manager · e-document SaaS", loc:"Seoul" },
@@ -1841,24 +1840,24 @@ function PageShinhan() {
       <div className="shinhan">
         <div className="stack gap-24">
           <div className="eyebrow enter enter-1">Case Study · 01</div>
-          <div className="h2 enter enter-2">Shinhan Bank<br/><span style={{color:"var(--muted)"}}>Product Manager &amp; Software Developer</span></div>
+          <div className="h2 enter enter-2">Shinhan Bank<br/><span style={{color:"var(--muted)"}}>Software Developer · 3.5 years</span></div>
           <div className="body-lg enter enter-3" style={{maxWidth:600}}>
-            Led product across a <b>17.9M-user</b> financial platform — from a $130M crisis refund workflow as an engineer, to portfolio-wide prioritization as a PM.
+            Built backends across a <b>17.9M-user</b> financial platform. From a <b>$130M</b> court-mandated refund workflow to AI-tuned pension recommendations to mobile-first fund products.
           </div>
           <div className="stack mt-16">
-            <div className="tag enter enter-4" style={{marginBottom:8}}>Selected outcomes</div>
-            <div className="bullet" style={{"--bi":1}}><div className="n">01</div><div>Led product initiatives across a 17.9M-user platform, improving system stability by <b>8%</b> and accelerating release velocity.</div></div>
-            <div className="bullet" style={{"--bi":2}}><div className="n">02</div><div>Shifted <b>40%</b> of engineering capacity to critical mobile workflows, increasing feature adoption <b>16%</b>.</div></div>
-            <div className="bullet" style={{"--bi":3}}><div className="n">03</div><div>Aligned 20+ teams on an API migration by negotiating vendor contract terms — replaced an inflated quote with a resource-based rate.</div></div>
-            <div className="bullet" style={{"--bi":4}}><div className="n">04</div><div>Resolved <b>$130M</b> in crisis transactions by engineering a SQL-based refund workflow with automated clawback — 100% regulatory compliance.</div></div>
+            <div className="tag enter enter-4" style={{marginBottom:8}}>Selected work</div>
+            <div className="bullet" style={{"--bi":1}}><div className="n">01</div><div>Engineered a SQL-based refund workflow with automated reversal logic that resolved <b>$130M</b> in court-mandated Lime Fund refunds at <b>100%</b> regulatory compliance.</div></div>
+            <div className="bullet" style={{"--bi":2}}><div className="n">02</div><div>Grew pension client assets <b>13% YoY</b> by integrating an AI recommendation engine into the digital pension service and tuning the model from behavior data.</div></div>
+            <div className="bullet" style={{"--bi":3}}><div className="n">03</div><div>Cut foreign-fund pricing latency <b>40%</b> by replacing Bloomberg's overseas feed with a Korea-hosted market data source.</div></div>
+            <div className="bullet" style={{"--bi":4}}><div className="n">04</div><div>Built backends for mobile-first fund products that reached <b>10M+ MAUs</b> and cut customer fees up to <b>50%</b> versus the branch-only line.</div></div>
           </div>
         </div>
         <div className="stack gap-16" style={{alignContent:"start"}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-            <div className="metric-card enter enter-scale"><div className="v"><Counter to={17.9} decimals={1} /><span className="unit">M</span></div><div className="k">Users on the platform I owned product decisions for</div></div>
-            <div className="metric-card enter enter-scale" style={{animationDelay:".1s"}}><div className="v">$<Counter to={130} /><span className="unit">M</span></div><div className="k">In crisis transactions resolved via an engineered SQL refund workflow</div></div>
-            <div className="metric-card enter enter-scale" style={{animationDelay:".2s"}}><div className="v"><Counter to={13} /><span className="unit">% YoY</span></div><div className="k">Pension client asset growth from AI recommendation tuning</div></div>
-            <div className="metric-card enter enter-scale" style={{animationDelay:".3s"}}><div className="v"><Counter to={50} /><span className="unit">%</span></div><div className="k">Fund launch cost reduction via standardized PRD templates</div></div>
+            <div className="metric-card enter enter-scale"><div className="v">$<Counter to={130} /><span className="unit">M</span></div><div className="k">In refunds resolved via the SQL-based redemption workflow I engineered</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".1s"}}><div className="v"><Counter to={13} /><span className="unit">% YoY</span></div><div className="k">Pension client asset growth from AI recommendation engine integration</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".2s"}}><div className="v"><Counter to={40} /><span className="unit">%</span></div><div className="k">Foreign-fund pricing latency cut by swapping the upstream market data source</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".3s"}}><div className="v"><Counter to={10} /><span className="unit">M+</span></div><div className="k">MAUs reached by mobile-first fund product backends I built</div></div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
             <img src="img/shinhan.png" alt="Shinhan Bank"
@@ -1867,10 +1866,10 @@ function PageShinhan() {
                  style={{width:"100%",borderRadius:8,boxShadow:"0 4px 16px rgba(1,33,105,0.12)",display:"block"}} />
           </div>
           <div className="row gap-8" style={{flexWrap:"wrap"}}>
-            <span className="chip">Prioritization</span>
-            <span className="chip">API Migration</span>
-            <span className="chip">AI Integration</span>
-            <span className="chip">Cross-Functional</span>
+            <span className="chip">SQL Engineering</span>
+            <span className="chip">Backend Systems</span>
+            <span className="chip">ML Integration</span>
+            <span className="chip">Financial Infrastructure</span>
           </div>
         </div>
       </div>

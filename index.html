@@ -1429,9 +1429,9 @@ Duke University, The Fuqua School of Business. MBA, expected May 2027. Tech Club
 Korea University, Computer Science and Engineering. B.Eng., July 2021. ICPC International Qualifier with the Korean National Team, top 4 nationally. Bronze Prize at the Nexon Game Design Competition.
 
 EXPERIENCE
-Shinhan Bank, Seoul. One of Korea's top-3 commercial banks, 30M-plus retail customers. I was there about 3.5 years, first as an engineer, then as a PM.
-Product Manager, Investment Service (Jan 2024 to Apr 2025). Reached 10M-plus monthly active users by launching mobile-first fund products that cut customer fees up to 50% versus the branch-only line, and I led UAT for the new channel. Lifted platform stability 8% under 400M monthly transactions with a customer-tailored recommendation module built from behavioral analysis. Drove over 1M dollars in new fund sales by turning a presidential youth-policy pledge into a mobile-first Youth Fund, shipped ahead of competing banks. Won C-suite approval for a 3M dollar compliance build by writing the third-party-vs-in-house comparison on latency and cost.
-Software Developer, Financial Service (Aug 2021 to Jan 2024). The story I point to most: a court mandated refunds for the Lime Fund mis-selling case, and I engineered a SQL-based redemption workflow with automated reversal logic that resolved 130M dollars in refunds at 100% regulatory compliance. I also grew pension client assets 13% YoY by integrating an AI recommendation engine, and cut foreign-fund pricing latency 40% by replacing Bloomberg's overseas feed with a Korea-hosted market data source.
+Shinhan Bank, Seoul. One of Korea's top-3 commercial banks, 30M-plus retail customers. I worked there about 3.5 years (Aug 2021 to Apr 2025) as a Software Developer, first on the Financial Service team and then on the Investment Service team.
+The story I point to most: a court mandated refunds for the Lime Fund mis-selling case, and I engineered a SQL-based redemption workflow with automated reversal logic that resolved 130M dollars in refunds at 100% regulatory compliance.
+I also grew pension client assets 13% YoY by integrating an AI recommendation engine into the digital pension service and tuning the model from behavior data, and cut foreign-fund pricing latency 40% by replacing Bloomberg's overseas feed with a Korea-hosted market data source. After moving to Investment Service, I built backends for mobile-first fund products that reached 10M-plus monthly active users and cut customer fees up to 50% versus the branch-only line, and I shipped a customer-tailored recommendation module that lifted platform stability 8% under 400M monthly transactions.
 Korean Medicine AI Startup, self-founded, Gwangju. Founder and Product Owner (Sep 2020 to Jul 2021). A 3-person AI healthtech team. I built an AI diagnostic tool for oriental medicine that cut patient intake questions 70% (from 58 to 15) while holding 95% diagnostic accuracy, won a 50K dollar non-dilutive government grant at age 24, and secured MOUs with two hospitals. This is where I learned that productizing a research model is much harder than building one.
 FORCS, Seoul. Product Manager (Jun 2017 to Sep 2019), e-document SaaS. My first PM role, a military-service-substitute position. I won the enterprise contract at Resorts World Sentosa, Singapore's largest casino, by leading the PaaS-to-SaaS transition, and acquired 50 enterprise subscriptions in two months by running field interviews with bus drivers and turning their pain into shipped requirements.
 
@@ -1463,7 +1463,7 @@ PERSONAL
 US Permanent Resident, so no work sponsorship is needed. Based in Durham, NC, open to relocation. I climb: 1st place, Red Level, at the 2023 Climb TCBC Regional, and I am belay-certified, so if you climb too, let's talk about it. The Nexon bronze was a 2-person RPG I designed. I like building small, real things. Contact: joonselim@gmail.com, (213) 278-9295, joonse.kr.
 
 COMMON QUESTIONS (answer in your own warm first-person voice, do not quote these verbatim)
-Why an MBA after being a PM: I already know how to ship. After running product at scale and aligning 20-plus teams, I wanted structured reps on strategy, finance, and leading at scale, the parts that are hard to learn solo inside one company. Fuqua's tech focus fit where I want to go next.
+Why an MBA after being a PM: I already know how to ship. After 3.5 years engineering at a 30M-customer bank, plus running product as a founder at my AI startup and as a PM earlier at FORCS, I wanted structured reps on strategy, finance, and leading at scale, the parts that are hard to learn solo from any one seat. Fuqua's tech focus fit where I want to go next.
 Are you actually technical: Yes. I started as an engineer, I still write code, and I am probably the strongest SQL person in my MBA cohort. The 130M dollar refund workflow was mine, end to end.
 What are you working on now: I am building an Agent AI on Google's ADK and studying agentic design patterns. The Phone Agent and the Daisy NYC project are recent things in that direction.
 What is your visa status: I am a US Permanent Resident, so no sponsorship is needed.
@@ -1651,7 +1651,7 @@ function PageMark({n, label}) {
 // Page 2 — About + Education + Experience (merged)
 function PageAbout() {
   const rows = [
-    { yr:"2024 — 2025", co:"Shinhan Bank", ro:"Product Manager, Investment Service", loc:"Seoul" },
+    { yr:"2024 — 2025", co:"Shinhan Bank", ro:"Software Developer, Investment Service", loc:"Seoul" },
     { yr:"2021 — 2024", co:"Shinhan Bank", ro:"Software Developer, Financial Service", loc:"Seoul" },
     { yr:"2020 — 2021", co:"Korean Medicine AI (self-founded)", ro:"Founder, Product Owner", loc:"Gwangju" },
     { yr:"2017 — 2019", co:"FORCS", ro:"Product Manager · e-document SaaS", loc:"Seoul" },
@@ -1760,24 +1760,24 @@ function PageShinhan() {
       <div className="shinhan">
         <div className="stack gap-24">
           <div className="eyebrow enter enter-1">Case Study · 01</div>
-          <div className="h2 enter enter-2">Shinhan Bank<br/><span style={{color:"var(--muted)"}}>Product Manager &amp; Software Developer</span></div>
+          <div className="h2 enter enter-2">Shinhan Bank<br/><span style={{color:"var(--muted)"}}>Software Developer · 3.5 years</span></div>
           <div className="body-lg enter enter-3" style={{maxWidth:600}}>
-            Led product across a <b>17.9M-user</b> financial platform — from a $130M crisis refund workflow as an engineer, to portfolio-wide prioritization as a PM.
+            Built backends across a <b>17.9M-user</b> financial platform. From a <b>$130M</b> court-mandated refund workflow to AI-tuned pension recommendations to mobile-first fund products.
           </div>
           <div className="stack mt-16">
-            <div className="tag enter enter-4" style={{marginBottom:8}}>Selected outcomes</div>
-            <div className="bullet" style={{"--bi":1}}><div className="n">01</div><div>Led product initiatives across a 17.9M-user platform, improving system stability by <b>8%</b> and accelerating release velocity.</div></div>
-            <div className="bullet" style={{"--bi":2}}><div className="n">02</div><div>Shifted <b>40%</b> of engineering capacity to critical mobile workflows, increasing feature adoption <b>16%</b>.</div></div>
-            <div className="bullet" style={{"--bi":3}}><div className="n">03</div><div>Aligned 20+ teams on an API migration by negotiating vendor contract terms — replaced an inflated quote with a resource-based rate.</div></div>
-            <div className="bullet" style={{"--bi":4}}><div className="n">04</div><div>Resolved <b>$130M</b> in crisis transactions by engineering a SQL-based refund workflow with automated clawback — 100% regulatory compliance.</div></div>
+            <div className="tag enter enter-4" style={{marginBottom:8}}>Selected work</div>
+            <div className="bullet" style={{"--bi":1}}><div className="n">01</div><div>Engineered a SQL-based refund workflow with automated reversal logic that resolved <b>$130M</b> in court-mandated Lime Fund refunds at <b>100%</b> regulatory compliance.</div></div>
+            <div className="bullet" style={{"--bi":2}}><div className="n">02</div><div>Grew pension client assets <b>13% YoY</b> by integrating an AI recommendation engine into the digital pension service and tuning the model from behavior data.</div></div>
+            <div className="bullet" style={{"--bi":3}}><div className="n">03</div><div>Cut foreign-fund pricing latency <b>40%</b> by replacing Bloomberg's overseas feed with a Korea-hosted market data source.</div></div>
+            <div className="bullet" style={{"--bi":4}}><div className="n">04</div><div>Built backends for mobile-first fund products that reached <b>10M+ MAUs</b> and cut customer fees up to <b>50%</b> versus the branch-only line.</div></div>
           </div>
         </div>
         <div className="stack gap-16" style={{alignContent:"start"}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-            <div className="metric-card enter enter-scale"><div className="v"><Counter to={17.9} decimals={1} /><span className="unit">M</span></div><div className="k">Users on the platform I owned product decisions for</div></div>
-            <div className="metric-card enter enter-scale" style={{animationDelay:".1s"}}><div className="v">$<Counter to={130} /><span className="unit">M</span></div><div className="k">In crisis transactions resolved via an engineered SQL refund workflow</div></div>
-            <div className="metric-card enter enter-scale" style={{animationDelay:".2s"}}><div className="v"><Counter to={13} /><span className="unit">% YoY</span></div><div className="k">Pension client asset growth from AI recommendation tuning</div></div>
-            <div className="metric-card enter enter-scale" style={{animationDelay:".3s"}}><div className="v"><Counter to={50} /><span className="unit">%</span></div><div className="k">Fund launch cost reduction via standardized PRD templates</div></div>
+            <div className="metric-card enter enter-scale"><div className="v">$<Counter to={130} /><span className="unit">M</span></div><div className="k">In refunds resolved via the SQL-based redemption workflow I engineered</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".1s"}}><div className="v"><Counter to={13} /><span className="unit">% YoY</span></div><div className="k">Pension client asset growth from AI recommendation engine integration</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".2s"}}><div className="v"><Counter to={40} /><span className="unit">%</span></div><div className="k">Foreign-fund pricing latency cut by swapping the upstream market data source</div></div>
+            <div className="metric-card enter enter-scale" style={{animationDelay:".3s"}}><div className="v"><Counter to={10} /><span className="unit">M+</span></div><div className="k">MAUs reached by mobile-first fund product backends I built</div></div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
             <img src="img/shinhan.png" alt="Shinhan Bank"
@@ -1786,10 +1786,10 @@ function PageShinhan() {
                  style={{width:"100%",borderRadius:8,boxShadow:"0 4px 16px rgba(1,33,105,0.12)",display:"block"}} />
           </div>
           <div className="row gap-8" style={{flexWrap:"wrap"}}>
-            <span className="chip">Prioritization</span>
-            <span className="chip">API Migration</span>
-            <span className="chip">AI Integration</span>
-            <span className="chip">Cross-Functional</span>
+            <span className="chip">SQL Engineering</span>
+            <span className="chip">Backend Systems</span>
+            <span className="chip">ML Integration</span>
+            <span className="chip">Financial Infrastructure</span>
           </div>
         </div>
       </div>
