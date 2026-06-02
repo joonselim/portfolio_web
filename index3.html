@@ -1080,7 +1080,10 @@
         overflow: visible !important;
       }
 
-      /* Reset the stage: no scaling, no fixed size, no shadow. */
+      /* Reset the stage: no scaling, no fixed size, no shadow, AND no
+         on-screen padding/gap. The 24px top padding on #stage-wrap from
+         the global rule pushed the first sheet down past 900px and
+         produced a blank first page on print. */
       #stage-wrap, #stage {
         position: static !important;
         transform: none !important;
@@ -1091,10 +1094,14 @@
         outline: none !important;
         overflow: visible !important;
         inset: auto !important;
+        padding: 0 !important;
+        gap: 0 !important;
+        margin: 0 !important;
       }
 
       /* Every slide visible, in document flow, at design size. */
-      .page {
+      .page,
+      .print-page.page {
         position: relative !important;
         inset: auto !important;
         width: 1600px !important;
@@ -1106,8 +1113,11 @@
         break-after: page;
         break-inside: avoid;
         background: var(--paper) !important;
+        box-shadow: none !important;
+        margin: 0 !important;
       }
-      .page:last-child {
+      .page:last-child,
+      .print-page.page:last-child {
         page-break-after: auto;
         break-after: auto;
       }
